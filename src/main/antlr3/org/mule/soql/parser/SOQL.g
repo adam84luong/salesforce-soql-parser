@@ -4,7 +4,14 @@ options
 {
   language = Java;
   output = AST;
-  backtrack=true;
+  ASTLabelType = CommonTree;
+  backtrack = true;
+}
+
+tokens {
+    SELECT_LIST;
+    COLUMN_SPEC;
+    FUNCTION_CALL_SPEC;
 }
 
 @lexer::header {
@@ -397,37 +404,16 @@ function_other:
 	| CONVERT_CURRENCY
 ;
 
-/********** SELECT **********/
+/**************************************** SELECT ****************************************/
 
 select_expression:
-	query EOF ;
+	query EOF! ;
 
 query:
-	SELECT select_list FROM table_references ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ;
+	SELECT select_list from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ;
 
-subquery:
-	( LPAREN ( query ) RPAREN );
-
-select_list:
-	select_reference ( COMMA select_reference )* ;
-
-select_reference:
-	  column_spec
-	| function_call_spec
-	| subquery
-	| typeof_spec ;
-
-column_spec:
-	( table_name DOT )* column_name ( alias )? ;
-	
-function_call_spec:
-	function_call ( alias )?;
-
-table_references:
-    table_reference ( COMMA table_reference )* ;
-    
-table_reference:
-	( table_name DOT )* table_name ( alias )? ;
+from_clause:
+    FROM table_reference ( COMMA table_reference )* ;
 
 using_clause:
 	USING SCOPE filter_scope_name ;
@@ -450,6 +436,35 @@ limit_clause:
 offset_clause:
 	OFFSET UNSIGNED_INTEGER ;
 
+/************************************** SELECT_LIST *************************************/
+
+select_list:
+    select_list_ -> ^(SELECT_LIST<SelectList> select_list_) ;
+
+select_list_:
+	select_reference ( COMMA! select_reference )* ;
+
+select_reference:
+	  column_spec
+	| function_call_spec
+	| subquery
+	| typeof_spec ;
+
+column_spec:
+    column_spec_ -> ^(COLUMN_SPEC<ColumnSpec> column_spec_) ;
+
+column_spec_:
+	( table_name DOT )* column_name ( alias )? ;
+
+function_call_spec:
+    function_call_spec_ -> ^(FUNCTION_CALL_SPEC<FunctionCallSpec> function_call_spec_) ;
+
+function_call_spec_:
+	function_call ( alias )? ;
+
+subquery:
+	( LPAREN ( query ) RPAREN ) ;
+
 /********** TYPEOF **********/
 
 typeof_spec:
@@ -461,7 +476,12 @@ typeof_spec:
 
 column_spec_list: column_name ( COMMA column_name )* ;
 
-/********** CONDITIONS **********/
+/************************************** FROM_CLAUSE *************************************/
+
+table_reference:
+	( table_name DOT )* table_name ( alias )? ;
+
+/*************************************** CONDITIONS *************************************/
 
 field_operator : EQ_SYM | NOT_EQ | LET | GET | GTH | LTH ;
 set_operator   : IN | NOT IN | INCLUDES | EXCLUDES;
@@ -495,7 +515,7 @@ set_values:
 set_value_list:
 	literal ( COMMA literal )* ;
 
-/********** FUNCTIONS **********/
+/*************************************** FUNCTIONS **************************************/
 
 function_call:
 	function_name ( LPAREN ( function_parameters_list )? RPAREN ) ;
@@ -506,7 +526,7 @@ function_parameters_list:
 function_parameter:
 	column_spec | literal | function_call ;
 
-/********** WITH **********/
+/************************************** WITH CLAUSE *************************************/
 
 with_clause:
 	WITH ( with_clause_plain | with_clause_data_category ) ;
@@ -526,7 +546,7 @@ data_category_spec_list:
 data_category_spec:
 	data_category_group_name data_category_filtering_selector ( data_category_name | LPAREN data_category_name ( COMMA data_category_name )* RPAREN ) ;
 
-/********** GROUP BY **********/
+/************************************ GROUP BY CLAUSE ***********************************/
 
 group_by_plain_clause:
 	group_by_list ;
@@ -543,7 +563,7 @@ group_by_list:
 group_by_spec:
 	column_spec | function_call ;
 
-/********** ORDER BY **********/
+/************************************ ORDER BY CLAUSE ***********************************/
 
 order_by_list:
 	order_by_spec ( COMMA order_by_spec )* ;

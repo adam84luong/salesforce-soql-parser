@@ -19,6 +19,7 @@ public class SOQLParserHelper {
 			SOQLParser.select_expression_return ret = parser.select_expression();
 
 			tree = (CommonTree) ret.getTree();
+
 		} catch (RecognitionException e) {
 			throw new IllegalStateException("Recognition exception is never thrown, only declared.");
 		}
