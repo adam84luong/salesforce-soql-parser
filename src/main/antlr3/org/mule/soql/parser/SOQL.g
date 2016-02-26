@@ -9,9 +9,12 @@ options
 }
 
 tokens {
-    SELECT_LIST;
+    ALIAS;
     COLUMN_SPEC;
     FUNCTION_CALL_SPEC;
+    SUBQUERY;
+    COLUMN_SPEC_LIST;
+    TYPEOF_WHEN_THEN_CLAUSE_LIST;
 }
 
 @lexer::header {
@@ -300,7 +303,7 @@ keywords_name_allowed :
 /********** NAMES **********/
 
 name                      : ID | keywords_name_allowed ;
-table_name	              : name ;
+object_name	              : name ;
 typeof_name               : name ;
 column_name		          : name ;
 filter_scope_name         : name ;
@@ -308,7 +311,9 @@ data_category_group_name  : name ;
 data_category_name        : name ;
 
 alias_name                : ID | keywords_alias_allowed ;
-alias			          : ( AS )? alias_name ;
+
+alias			          : alias_ -> ^(ALIAS<Alias> alias_) ;
+alias_			          : ( AS )? alias_name ;
 
 /********** LITERALS **********/
 
@@ -410,39 +415,36 @@ select_expression:
 	query EOF! ;
 
 query:
-	SELECT select_list from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ;
+	select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ;
+
+select_clause:
+    SELECT^ select_reference ( COMMA! select_reference )* ;
 
 from_clause:
-    FROM table_reference ( COMMA table_reference )* ;
+    FROM^ object_reference ( COMMA object_reference )* ;
 
 using_clause:
-	USING SCOPE filter_scope_name ;
+	USING^ SCOPE! filter_scope_name ;
 
 where_clause:
-	WHERE condition ;
+	WHERE^ condition ;
 
 groupby_clause:
-	GROUP BY ( group_by_rollup_clause | group_by_cube_clause | group_by_plain_clause ) ;
+	GROUP^ BY! ( group_by_rollup_clause | group_by_cube_clause | group_by_plain_clause ) ;
 
 having_clause:
-	HAVING condition ;
+	HAVING^ condition ;
 
 orderby_clause:
-	ORDER BY order_by_list ;
+	ORDER^ BY! order_by_list ;
 
 limit_clause:
-	LIMIT UNSIGNED_INTEGER ;
+	LIMIT^ UNSIGNED_INTEGER ;
 	
 offset_clause:
-	OFFSET UNSIGNED_INTEGER ;
+	OFFSET^ UNSIGNED_INTEGER ;
 
 /************************************** SELECT_LIST *************************************/
-
-select_list:
-    select_list_ -> ^(SELECT_LIST<SelectList> select_list_) ;
-
-select_list_:
-	select_reference ( COMMA! select_reference )* ;
 
 select_reference:
 	  column_spec
@@ -454,7 +456,7 @@ column_spec:
     column_spec_ -> ^(COLUMN_SPEC<ColumnSpec> column_spec_) ;
 
 column_spec_:
-	( table_name DOT )* column_name ( alias )? ;
+	( object_name DOT )* column_name ( alias )? ;
 
 function_call_spec:
     function_call_spec_ -> ^(FUNCTION_CALL_SPEC<FunctionCallSpec> function_call_spec_) ;
@@ -463,23 +465,44 @@ function_call_spec_:
 	function_call ( alias )? ;
 
 subquery:
-	( LPAREN ( query ) RPAREN ) ;
+    subquery_ -> ^(SUBQUERY<SubQuery> subquery_) ;
+
+subquery_:
+	( LPAREN! ( query ) RPAREN! ) ;
 
 /********** TYPEOF **********/
 
 typeof_spec:
-	TYPEOF typeof_name
-		( WHEN table_name THEN column_spec_list )+
-		( ELSE column_spec_list )?
-	END
-;
+	TYPEOF^ typeof_name
+		typeof_when_then_clause_list
+		( typeof_else_clause )?
+	END! ;
 
-column_spec_list: column_name ( COMMA column_name )* ;
+typeof_when_then_clause_list:
+    typeof_when_then_clause_list_ -> ^(TYPEOF_WHEN_THEN_CLAUSE_LIST<TypeofWhenThenClauseList> typeof_when_then_clause_list_) ;
+
+typeof_when_then_clause_list_:
+    ( typeof_when_then_clause )+ ;
+
+typeof_when_then_clause:
+    WHEN^ object_name typeof_then_clause ;
+
+typeof_then_clause:
+    THEN^ column_spec_list ;
+
+typeof_else_clause:
+    ELSE^ column_spec_list ;
+
+column_spec_list:
+    column_spec_list_ -> ^(COLUMN_SPEC_LIST<ColumnSpecList> column_spec_list_) ;
+
+column_spec_list_:
+    column_name ( COMMA! column_name )* ;
 
 /************************************** FROM_CLAUSE *************************************/
 
-table_reference:
-	( table_name DOT )* table_name ( alias )? ;
+object_reference:
+	( object_name DOT )* object_name ( alias )? ;
 
 /*************************************** CONDITIONS *************************************/
 
