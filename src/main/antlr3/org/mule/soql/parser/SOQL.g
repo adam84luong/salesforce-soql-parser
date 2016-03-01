@@ -10,10 +10,10 @@ options
 
 tokens {
     ALIAS;
-    COLUMN_SPEC;
+    FIELD_SPEC;
     FUNCTION_CALL_SPEC;
     SUBQUERY;
-    COLUMN_SPEC_LIST;
+    OBJECT_REFERENCE_PREFIX;
     TYPEOF_WHEN_THEN_CLAUSE_LIST;
 }
 
@@ -305,7 +305,7 @@ keywords_name_allowed :
 name                      : ID | keywords_name_allowed ;
 object_name	              : name ;
 typeof_name               : name ;
-column_name		          : name ;
+field_name		          : name ;
 filter_scope_name         : name ;
 data_category_group_name  : name ;
 data_category_name        : name ;
@@ -421,7 +421,7 @@ select_clause:
     SELECT^ select_reference ( COMMA! select_reference )* ;
 
 from_clause:
-    FROM^ object_reference ( COMMA object_reference )* ;
+    FROM^ object_reference ( COMMA! object_reference )* ;
 
 using_clause:
 	USING^ SCOPE! filter_scope_name ;
@@ -447,16 +447,16 @@ offset_clause:
 /************************************** SELECT_LIST *************************************/
 
 select_reference:
-	  column_spec
+	  field_spec
 	| function_call_spec
 	| subquery
 	| typeof_spec ;
 
-column_spec:
-    column_spec_ -> ^(COLUMN_SPEC<ColumnSpec> column_spec_) ;
+field_spec:
+    field_spec_ -> ^(FIELD_SPEC<FieldSpec> field_spec_) ;
 
-column_spec_:
-	( object_name DOT )* column_name ( alias )? ;
+field_spec_:
+	( object_reference_prefix )? field_name ( alias )? ;
 
 function_call_spec:
     function_call_spec_ -> ^(FUNCTION_CALL_SPEC<FunctionCallSpec> function_call_spec_) ;
@@ -488,21 +488,24 @@ typeof_when_then_clause:
     WHEN^ object_name typeof_then_clause ;
 
 typeof_then_clause:
-    THEN^ column_spec_list ;
+    THEN^ field_spec_list ;
 
 typeof_else_clause:
-    ELSE^ column_spec_list ;
+    ELSE^ field_spec_list ;
 
-column_spec_list:
-    column_spec_list_ -> ^(COLUMN_SPEC_LIST<ColumnSpecList> column_spec_list_) ;
-
-column_spec_list_:
-    column_name ( COMMA! column_name )* ;
+field_spec_list:
+    field_name ( COMMA! field_name )* ;
 
 /************************************** FROM_CLAUSE *************************************/
 
 object_reference:
-	( object_name DOT )* object_name ( alias )? ;
+	( object_reference_prefix )? object_name ( alias )? ;
+
+object_reference_prefix:
+    object_reference_prefix_ -> ^(OBJECT_REFERENCE_PREFIX<ObjectReferencePrefix> object_reference_prefix_) ;
+
+object_reference_prefix_:
+    ( object_name DOT! )+ ;
 
 /*************************************** CONDITIONS *************************************/
 
@@ -511,6 +514,7 @@ set_operator   : IN | NOT IN | INCLUDES | EXCLUDES;
 
 condition:
 	condition1 ( ( OR | AND ) condition1 )* ;
+
 condition1:
 	( NOT )? ( simple_condition | parenthesized_condition ) ;
 
@@ -530,7 +534,7 @@ like_condition:
 	condition_field LIKE ( STRING_VALUE | LIKE_STRING_VALUE );
 
 condition_field:
-	column_spec | function_call ;
+	field_spec | function_call ;
 
 set_values:
 	subquery | ( LPAREN ( set_value_list ) RPAREN ) ;
@@ -547,7 +551,7 @@ function_parameters_list:
 	function_parameter ( COMMA function_parameter )* ;
 
 function_parameter:
-	column_spec | literal | function_call ;
+	field_spec | literal | function_call ;
 
 /************************************** WITH CLAUSE *************************************/
 
@@ -584,7 +588,7 @@ group_by_list:
 	group_by_spec ( COMMA group_by_spec )* ;
 
 group_by_spec:
-	column_spec | function_call ;
+	field_spec | function_call ;
 
 /************************************ ORDER BY CLAUSE ***********************************/
 
@@ -595,5 +599,5 @@ order_by_spec:
 	order_by_field ( ASC | DESC )? ( NULLS ( FIRST | LAST ) )? ;
 
 order_by_field:
-	column_spec | function_call ;
+	field_spec | function_call ;
 	
