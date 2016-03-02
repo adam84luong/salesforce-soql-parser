@@ -3,7 +3,7 @@ package org.mule.soql.parser;
 public class SOQLParserSingleTest extends SOQLParserTest {
 
 	public SOQLParserSingleTest() {
-		super("SELECT createdDate, id, Owner.Name, TYPEOF What WHEN Contact THEN CellPhone,Phone WHEN Account THEN Phone,Name ELSE Name END,name,StageName,IsClosed,(select OpportunityAccessLevel, User.Name,Team_Member_Business_Line__c,Team_Member_Business_Unit__c,Team_Member_Sales_Team__c, TeamMemberRole,Team_Member_Region__c, Team_Member_GBL__c from OpportunityTeamMembers  where OpportunityAccessLevel ='Read') FROM Opportunity where IsClosed = false and CreatedDate > 2015-12-16T21:41:32.000Z order by CreatedDate limit 10000");
+		super("SELECT Id, Nom_Ticket_de_caisse__c, OwnerId, Moyen_de_paiement__c, Moyen_Paiement_Acompte__c, Moyen_Paiement_Solde__c, Date_de_paiement__c, Date_acompte__c, Date_solde__c, Amount, Montant_acompte__c, Montant_solde__c, Aloa_Groupe_individuel__c FROM Opportunity WHERE (StageName = 'Fermée / Gagnée' AND Date_acompte__c != null) OR (StageName = 'Fermée / Gagnée' AND Date_solde__c != null) OR NOT (StageName = 'Fermée / Gagnée' AND Date_de_paiement__c != null)");
 	}
 
 }

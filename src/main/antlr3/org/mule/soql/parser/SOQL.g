@@ -15,6 +15,11 @@ tokens {
     SUBQUERY;
     OBJECT_REFERENCE_PREFIX;
     TYPEOF_WHEN_THEN_CLAUSE_LIST;
+    FUNCTION_PARAMETERS_LIST;
+    FIELD_CONDITION;
+    SET_CONDITION;
+    LIKE_CONDITION;
+    PARENTHESIZED_CONDITION;
 }
 
 @lexer::header {
@@ -409,7 +414,7 @@ function_other:
 	| CONVERT_CURRENCY
 ;
 
-/**************************************** SELECT ****************************************/
+/************************************* SELECT QUERY *************************************/
 
 select_expression:
 	query EOF! ;
@@ -444,6 +449,17 @@ limit_clause:
 offset_clause:
 	OFFSET^ UNSIGNED_INTEGER ;
 
+/************************************ SELECT SUBQUERY ***********************************/
+
+subquery:
+    subquery_ -> ^(SUBQUERY<SubQuery> subquery_) ;
+
+subquery_:
+    ( LPAREN! ( subquery_select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ) RPAREN! ) ;
+
+subquery_select_clause:
+    SELECT^ subquery_select_reference ( COMMA! subquery_select_reference )* ;
+
 /************************************** SELECT_LIST *************************************/
 
 select_reference:
@@ -451,6 +467,10 @@ select_reference:
 	| function_call_spec
 	| subquery
 	| typeof_spec ;
+
+subquery_select_reference:
+	  field_spec
+	| function_call_spec ;
 
 field_spec:
     field_spec_ -> ^(FIELD_SPEC<FieldSpec> field_spec_) ;
@@ -463,12 +483,6 @@ function_call_spec:
 
 function_call_spec_:
 	function_call ( alias )? ;
-
-subquery:
-    subquery_ -> ^(SUBQUERY<SubQuery> subquery_) ;
-
-subquery_:
-	( LPAREN! ( query ) RPAREN! ) ;
 
 /********** TYPEOF **********/
 
@@ -494,7 +508,7 @@ typeof_else_clause:
     ELSE^ field_spec_list ;
 
 field_spec_list:
-    field_name ( COMMA! field_name )* ;
+    field_spec ( COMMA! field_spec )* ;
 
 /************************************** FROM_CLAUSE *************************************/
 
@@ -513,24 +527,36 @@ field_operator : EQ_SYM | NOT_EQ | LET | GET | GTH | LTH ;
 set_operator   : IN | NOT IN | INCLUDES | EXCLUDES;
 
 condition:
-	condition1 ( ( OR | AND ) condition1 )* ;
+	condition1 ( ( OR^ | AND^ ) condition1 )* ;
 
 condition1:
-	( NOT )? ( simple_condition | parenthesized_condition ) ;
+	( NOT^ )? ( simple_condition | parenthesized_condition ) ;
 
 parenthesized_condition:
-	LPAREN ( condition ) RPAREN ;
+    parenthesized_condition_ -> ^(PARENTHESIZED_CONDITION parenthesized_condition_) ;
+
+parenthesized_condition_:
+	LPAREN! ( condition ) RPAREN! ;
 
 simple_condition:
 	field_condition | set_condition | like_condition ;
 
 field_condition:
+    field_condition_ -> ^(FIELD_CONDITION field_condition_) ;
+
+field_condition_:
 	condition_field field_operator literal ;
 
 set_condition:
+    set_condition_ -> ^(SET_CONDITION set_condition_) ;
+
+set_condition_:
 	condition_field set_operator set_values ;
 
 like_condition:
+    like_condition_ -> ^(LIKE_CONDITION like_condition_) ;
+
+like_condition_:
 	condition_field LIKE ( STRING_VALUE | LIKE_STRING_VALUE );
 
 condition_field:
@@ -545,10 +571,13 @@ set_value_list:
 /*************************************** FUNCTIONS **************************************/
 
 function_call:
-	function_name ( LPAREN ( function_parameters_list )? RPAREN ) ;
-	
+	function_name ( LPAREN! ( function_parameters_list )? RPAREN! ) ;
+
 function_parameters_list:
-	function_parameter ( COMMA function_parameter )* ;
+    function_parameters_list_ -> ^(FUNCTION_PARAMETERS_LIST<FunctionParametersList> function_parameters_list_) ;
+
+function_parameters_list_:
+	function_parameter ( COMMA! function_parameter )* ;
 
 function_parameter:
 	field_spec | literal | function_call ;
