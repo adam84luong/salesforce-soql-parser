@@ -20,6 +20,8 @@ tokens {
     SET_CONDITION;
     LIKE_CONDITION;
     PARENTHESIZED_CONDITION;
+    SET_VALUE_LIST;
+    ORDER_BY_SPEC;
 }
 
 @lexer::header {
@@ -551,7 +553,7 @@ set_condition:
     set_condition_ -> ^(SET_CONDITION set_condition_) ;
 
 set_condition_:
-	condition_field set_operator set_values ;
+	condition_field set_operator ( subquery | set_values ) ;
 
 like_condition:
     like_condition_ -> ^(LIKE_CONDITION like_condition_) ;
@@ -563,10 +565,13 @@ condition_field:
 	field_spec | function_call ;
 
 set_values:
-	subquery | ( LPAREN ( set_value_list ) RPAREN ) ;
+	( LPAREN! ( set_value_list ) RPAREN! ) ;
 
 set_value_list:
-	literal ( COMMA literal )* ;
+    set_value_list_ -> ^(SET_VALUE_LIST set_value_list_) ;
+
+set_value_list_:
+	literal ( COMMA! literal )* ;
 
 /*************************************** FUNCTIONS **************************************/
 
@@ -608,13 +613,13 @@ group_by_plain_clause:
 	group_by_list ;
 
 group_by_rollup_clause:
-	ROLLUP ( LPAREN ( group_by_list ) RPAREN ) ;
+	ROLLUP^ ( LPAREN! ( group_by_list ) RPAREN! ) ;
 
 group_by_cube_clause:
-	CUBE ( LPAREN ( group_by_list ) RPAREN ) ;
+	CUBE^ ( LPAREN! ( group_by_list ) RPAREN! ) ;
 
 group_by_list:
-	group_by_spec ( COMMA group_by_spec )* ;
+	group_by_spec ( COMMA! group_by_spec )* ;
 
 group_by_spec:
 	field_spec | function_call ;
@@ -622,10 +627,19 @@ group_by_spec:
 /************************************ ORDER BY CLAUSE ***********************************/
 
 order_by_list:
-	order_by_spec ( COMMA order_by_spec )* ;
+	order_by_spec ( COMMA! order_by_spec )* ;
 
 order_by_spec:
-	order_by_field ( ASC | DESC )? ( NULLS ( FIRST | LAST ) )? ;
+    order_by_spec_ -> ^(ORDER_BY_SPEC order_by_spec_) ;
+
+order_by_spec_:
+	order_by_field ( order_by_direction_clause )? ( order_by_nulls_clause )? ;
+
+order_by_direction_clause:
+    ASC | DESC ;
+
+order_by_nulls_clause:
+    NULLS^ ( FIRST | LAST ) ;
 
 order_by_field:
 	field_spec | function_call ;
