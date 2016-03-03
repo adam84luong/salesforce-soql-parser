@@ -1,16 +1,12 @@
 package org.mule.soql.parser;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.*;
 import org.antlr.runtime.tree.CommonTree;
+import org.mule.soql.exception.SOQLParsingException;
 
 public class SOQLParserHelper {
 	
-	public CommonTree parseTextToTree(String text) {
-		CommonTree tree = null;
-		
+	public CommonTree parseTextToTree(String text) throws SOQLParsingException {
 		try {
 			ANTLRStringStream input = new ANTLRStringStream(text);
 			TokenStream tokens = new CommonTokenStream(new SOQLLexer(input));
@@ -18,13 +14,19 @@ public class SOQLParserHelper {
 			SOQLParser parser = new SOQLParser(tokens);
 			SOQLParser.select_expression_return ret = parser.select_expression();
 
-			tree = ret.getTree();
+			CommonTree tree = ret.getTree();
 
-		} catch (RecognitionException e) {
-			throw new IllegalStateException("Recognition exception is never thrown, only declared.");
+			if(tree == null) {
+				throw new SOQLParsingException("The SOQL tree could not be generated due to an unexpected error");
+			}
+
+			return tree;
+
+		} catch (NoViableAltException e) {
+			throw new SOQLParsingException("Syntax error close to '" + e.token.getText() + "' (position: " + e.charPositionInLine + ")", e);
+		}  catch (RecognitionException e) {
+			throw new SOQLParsingException("Recognition exception is never thrown, only declared.", e);
 		}
-		
-		return tree;
 	}
 	
 }

@@ -35,12 +35,8 @@ public abstract class SOQLParserTest {
 
 	@Test
 	public void testSOQLLine() throws IOException {
-		try {
-			CommonTree tree = parserHelper.parseTextToTree(line);
-			assertNotNull(tree);
-		} catch (SOQLParsingException e) {
-			fail(e.getMessage());
-		}
+		CommonTree tree = parserHelper.parseTextToTree(line);
+		assertNotNull(tree);
 	}
 
 	@After

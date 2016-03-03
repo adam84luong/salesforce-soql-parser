@@ -12,6 +12,10 @@ public class SOQLParsingException extends RuntimeException {
         super(s);
     }
 
+    public SOQLParsingException(String s, Throwable t) {
+        super(s, t);
+    }
+
     public SOQLParsingException() {
     }
     
