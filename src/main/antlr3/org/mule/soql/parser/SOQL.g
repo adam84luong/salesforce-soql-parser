@@ -14,14 +14,18 @@ tokens {
     FUNCTION_CALL_SPEC;
     SUBQUERY;
     OBJECT_REFERENCE_PREFIX;
-    TYPEOF_WHEN_THEN_CLAUSE_LIST;
-    FUNCTION_PARAMETERS_LIST;
+    TYPEOF_WHEN_THEN_CLAUSES;
+    FUNCTION_PARAMETERS;
     FIELD_CONDITION;
     SET_CONDITION;
     LIKE_CONDITION;
     PARENTHESIZED_CONDITION;
-    SET_VALUE_LIST;
+    SET_VALUES;
     ORDER_BY_SPEC;
+    WITH_CLAUSE_PLAIN;
+    DATA_CATEGORY_SPEC;
+    DATA_CATEGORY_PARAMETERS;
+    GROUP_BY_PLAIN_CLAUSE;
 }
 
 @lexer::header {
@@ -457,7 +461,7 @@ subquery:
     subquery_ -> ^(SUBQUERY<SubQuery> subquery_) ;
 
 subquery_:
-    ( LPAREN! ( subquery_select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ) RPAREN! ) ;
+    LPAREN! subquery_select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? RPAREN! ;
 
 subquery_select_clause:
     SELECT^ subquery_select_reference ( COMMA! subquery_select_reference )* ;
@@ -495,7 +499,7 @@ typeof_spec:
 	END! ;
 
 typeof_when_then_clause_list:
-    typeof_when_then_clause_list_ -> ^(TYPEOF_WHEN_THEN_CLAUSE_LIST<TypeofWhenThenClauseList> typeof_when_then_clause_list_) ;
+    typeof_when_then_clause_list_ -> ^(TYPEOF_WHEN_THEN_CLAUSES<TypeofWhenThenClauses> typeof_when_then_clause_list_) ;
 
 typeof_when_then_clause_list_:
     ( typeof_when_then_clause )+ ;
@@ -538,7 +542,7 @@ parenthesized_condition:
     parenthesized_condition_ -> ^(PARENTHESIZED_CONDITION parenthesized_condition_) ;
 
 parenthesized_condition_:
-	LPAREN! ( condition ) RPAREN! ;
+	LPAREN! condition RPAREN! ;
 
 simple_condition:
 	field_condition | set_condition | like_condition ;
@@ -565,10 +569,10 @@ condition_field:
 	field_spec | function_call ;
 
 set_values:
-	( LPAREN! ( set_value_list ) RPAREN! ) ;
+	LPAREN! set_value_list RPAREN! ;
 
 set_value_list:
-    set_value_list_ -> ^(SET_VALUE_LIST set_value_list_) ;
+    set_value_list_ -> ^(SET_VALUES set_value_list_) ;
 
 set_value_list_:
 	literal ( COMMA! literal )* ;
@@ -576,12 +580,12 @@ set_value_list_:
 /*************************************** FUNCTIONS **************************************/
 
 function_call:
-	function_name ( LPAREN! ( function_parameters_list )? RPAREN! ) ;
+	function_name LPAREN! ( function_parameter_list )? RPAREN! ;
 
-function_parameters_list:
-    function_parameters_list_ -> ^(FUNCTION_PARAMETERS_LIST<FunctionParametersList> function_parameters_list_) ;
+function_parameter_list:
+    function_parameter_list_ -> ^(FUNCTION_PARAMETERS<FunctionParameters> function_parameter_list_) ;
 
-function_parameters_list_:
+function_parameter_list_:
 	function_parameter ( COMMA! function_parameter )* ;
 
 function_parameter:
@@ -590,33 +594,48 @@ function_parameter:
 /************************************** WITH CLAUSE *************************************/
 
 with_clause:
-	WITH ( with_clause_plain | with_clause_data_category ) ;
+	WITH^ ( with_plain_clause | with_data_category_clause ) ;
+
+with_plain_clause:
+    with_plain_clause_ -> ^(WITH_CLAUSE_PLAIN with_plain_clause_) ;
+
+with_plain_clause_:
+	field_condition ;
 	
-with_clause_plain:
-	condition ;
-	
-with_clause_data_category:
-	DATA CATEGORY data_category_spec_list ;
-	
-data_category_filtering_selector:
-	AT | ABOVE | ABOVE_OR_BELOW | BELOW ;
+with_data_category_clause:
+	DATA^ CATEGORY! data_category_spec_list ;
 	
 data_category_spec_list:
-	data_category_spec ( AND data_category_spec )* ;
+	data_category_spec ( AND! data_category_spec )* ;
 
 data_category_spec:
-	data_category_group_name data_category_filtering_selector ( data_category_name | LPAREN data_category_name ( COMMA data_category_name )* RPAREN ) ;
+    data_category_spec_ -> ^(DATA_CATEGORY_SPEC data_category_spec_) ;
+
+data_category_spec_:
+	data_category_group_name data_category_filtering_selector data_category_parameter_list ;
+
+data_category_parameter_list:
+    data_category_parameter_list_ -> ^(DATA_CATEGORY_PARAMETERS data_category_parameter_list_) ;
+
+data_category_parameter_list_:
+    data_category_name | LPAREN! data_category_name ( COMMA! data_category_name )* RPAREN! ;
+
+data_category_filtering_selector:
+	AT | ABOVE | ABOVE_OR_BELOW | BELOW ;
 
 /************************************ GROUP BY CLAUSE ***********************************/
 
 group_by_plain_clause:
+    group_by_plain_clause_ -> ^(GROUP_BY_PLAIN_CLAUSE group_by_plain_clause_) ;
+
+group_by_plain_clause_:
 	group_by_list ;
 
 group_by_rollup_clause:
-	ROLLUP^ ( LPAREN! ( group_by_list ) RPAREN! ) ;
+	ROLLUP^ LPAREN! group_by_list RPAREN! ;
 
 group_by_cube_clause:
-	CUBE^ ( LPAREN! ( group_by_list ) RPAREN! ) ;
+	CUBE^ LPAREN! group_by_list RPAREN! ;
 
 group_by_list:
 	group_by_spec ( COMMA! group_by_spec )* ;
