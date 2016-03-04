@@ -9,10 +9,13 @@ options
 }
 
 tokens {
-    ALIAS;
+    SOQL_QUERY;
+    SOQL_SUBQUERY;
     FIELD_SPEC;
+    FIELD;
     FUNCTION_CALL_SPEC;
-    SUBQUERY;
+    FUNCTION_CALL;
+    ALIAS;
     OBJECT_REFERENCE_PREFIX;
     TYPEOF_WHEN_THEN_CLAUSES;
     FUNCTION_PARAMETERS;
@@ -133,7 +136,9 @@ AND                 : A_ N_ D_ ;
 AS   				: A_ S_ ;
 ASC                 : A_ S_ C_ ;
 BY  				: B_ Y_ ;
+CUBE                : C_ U_ B_ E_ ;
 DESC                : D_ E_ S_ C_ ;
+ELSE                : E_ L_ S_ E_ ;
 EXCLUDES            : E_ X_ C_ L_ U_ D_ E_ S_ ;
 FALSE               : F_ A_ L_ S_ E_ ;
 FIRST               : F_ I_ R_ S_ T_ ;
@@ -149,11 +154,14 @@ NOT                 : N_ O_ T_ ;
 NULL     			: N_ U_ L_ L_ ;
 NULLS               : N_ U_ L_ L_ S_ ;
 OR                  : O_ R_ ;
+ROLLUP              : R_ O_ L_ L_ U_ P_ ;
 SELECT				: S_ E_ L_ E_ C_ T_ ;
 TRUE                : T_ R_ U_ E_ ;
 USING   			: U_ S_ I_ N_ G_ ;
 WHERE				: W_ H_ E_ R_ E_ ;
 WITH                : W_ I_ T_ H_ ;
+FOR                 : F_ O_ R_ ;
+UPDATE              : U_ P_ D_ A_ T_ E_ ;
 
 /********** NON RESERVED KEYWORDS **********/
 
@@ -162,16 +170,17 @@ ABOVE_OR_BELOW      : A_ B_ O_ V_ E_ '_' O_ R_ '_' B_ E_ L_ O_ W_ ;
 AT                  : A_ T_ ;
 BELOW               : B_ E_ L_ O_ W_ ;
 CATEGORY            : C_ A_ T_ E_ G_ O_ R_ Y_ ;
-CUBE                : C_ U_ B_ E_ ;
 DATA                : D_ A_ T_ A_ ;
-ELSE                : E_ L_ S_ E_ ;
 END                 : E_ N_ D_ ;
 OFFSET              : O_ F_ F_ S_ E_ T_ ;
 ORDER   			: O_ R_ D_ E_ R_ ;
-ROLLUP              : R_ O_ L_ L_ U_ P_ ;
+REFERENCE           : R_ E_ F_ E_ R_ E_ N_ C_ E_ ;
 SCOPE               : S_ C_ O_ P_ E_ ;
+TRACKING            : T_ R_ A_ C_ K_ I_ N_ G_ ;
 THEN                : T_ H_ E_ N_ ;
 TYPEOF              : T_ Y_ P_ E_ O_ F_ ;
+VIEW                : V_ I_ E_ W_ ;
+VIEWSTAT            : V_ I_ E_ W_ S_ T_ A_ T_ ;
 WHEN                : W_ H_ E_ N_ ;
 
 /********** DATE FUNCTIONS **********/
@@ -298,12 +307,18 @@ keywords_alias_allowed :
 	| AT
 	| BELOW
 	| CATEGORY
-	| CUBE
 	| DATA
+	| END
 	| OFFSET
-	| ROLLUP
 	| ORDER
+	| REFERENCE
 	| SCOPE
+	| TRACKING
+	| THEN
+	| TYPEOF
+	| VIEW
+	| VIEWSTAT
+    | WHEN
 ;
 
 keywords_name_allowed :
@@ -315,7 +330,6 @@ keywords_name_allowed :
 
 name                      : ID | keywords_name_allowed ;
 object_name	              : name ;
-typeof_name               : name ;
 field_name		          : name ;
 filter_scope_name         : name ;
 data_category_group_name  : name ;
@@ -422,14 +436,14 @@ function_other:
 
 /************************************* SELECT QUERY *************************************/
 
-select_expression:
-	query EOF! ;
+soql_query:
+    soql_query_ -> ^(SOQL_QUERY<SOQLQuery> soql_query_) ;
 
-query:
-	select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ;
+soql_query_:
+	select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ( update_clause )? EOF! ;
 
 select_clause:
-    SELECT^ select_reference ( COMMA! select_reference )* ;
+    SELECT<SelectClause>^ select_reference ( COMMA! select_reference )* ;
 
 from_clause:
     FROM^ object_reference ( COMMA! object_reference )* ;
@@ -455,23 +469,29 @@ limit_clause:
 offset_clause:
 	OFFSET^ UNSIGNED_INTEGER ;
 
+for_clause:
+    FOR^ (REFERENCE | VIEW | UPDATE) ;
+
+update_clause:
+    UPDATE^ (TRACKING | VIEWSTAT) ;
+
 /************************************ SELECT SUBQUERY ***********************************/
 
-subquery:
-    subquery_ -> ^(SUBQUERY<SubQuery> subquery_) ;
+soql_subquery:
+    soql_subquery_ -> ^(SOQL_SUBQUERY<SOQLSubQuery> soql_subquery_) ;
 
-subquery_:
+soql_subquery_:
     LPAREN! subquery_select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? RPAREN! ;
 
 subquery_select_clause:
     SELECT^ subquery_select_reference ( COMMA! subquery_select_reference )* ;
 
-/************************************** SELECT_LIST *************************************/
+/************************************ SELECT REFERENCES *********************************/
 
 select_reference:
 	  field_spec
 	| function_call_spec
-	| subquery
+	| soql_subquery
 	| typeof_spec ;
 
 subquery_select_reference:
@@ -482,7 +502,7 @@ field_spec:
     field_spec_ -> ^(FIELD_SPEC<FieldSpec> field_spec_) ;
 
 field_spec_:
-	( object_reference_prefix )? field_name ( alias )? ;
+	field ( alias )? ;
 
 function_call_spec:
     function_call_spec_ -> ^(FUNCTION_CALL_SPEC<FunctionCallSpec> function_call_spec_) ;
@@ -490,10 +510,35 @@ function_call_spec:
 function_call_spec_:
 	function_call ( alias )? ;
 
-/********** TYPEOF **********/
+/***************************************** FIELD ****************************************/
+
+field:
+    field_ -> ^(FIELD<Field> field_) ;
+
+field_:
+    ( object_reference_prefix )? field_name ;
+
+/*************************************** FUNCTION ***************************************/
+
+function_call:
+    function_call_ -> ^(FUNCTION_CALL function_call_) ;
+
+function_call_:
+	function_name LPAREN! ( function_parameter_list )? RPAREN! ;
+
+function_parameter_list:
+    function_parameter_list_ -> ^(FUNCTION_PARAMETERS<FunctionParameters> function_parameter_list_) ;
+
+function_parameter_list_:
+	function_parameter ( COMMA! function_parameter )* ;
+
+function_parameter:
+	field | literal | function_call ;
+
+/***************************************** TYPEOF ***************************************/
 
 typeof_spec:
-	TYPEOF^ typeof_name
+	TYPEOF^ object_name
 		typeof_when_then_clause_list
 		( typeof_else_clause )?
 	END! ;
@@ -508,13 +553,13 @@ typeof_when_then_clause:
     WHEN^ object_name typeof_then_clause ;
 
 typeof_then_clause:
-    THEN^ field_spec_list ;
+    THEN^ field_list ;
 
 typeof_else_clause:
-    ELSE^ field_spec_list ;
+    ELSE^ field_list ;
 
-field_spec_list:
-    field_spec ( COMMA! field_spec )* ;
+field_list:
+    field ( COMMA! field )* ;
 
 /************************************** FROM_CLAUSE *************************************/
 
@@ -527,7 +572,7 @@ object_reference_prefix:
 object_reference_prefix_:
     ( object_name DOT! )+ ;
 
-/*************************************** CONDITIONS *************************************/
+/*************************************** CONDITION **************************************/
 
 field_operator : EQ_SYM | NOT_EQ | LET | GET | GTH | LTH ;
 set_operator   : IN | NOT IN | INCLUDES | EXCLUDES;
@@ -557,7 +602,7 @@ set_condition:
     set_condition_ -> ^(SET_CONDITION set_condition_) ;
 
 set_condition_:
-	condition_field set_operator ( subquery | set_values ) ;
+	condition_field set_operator ( soql_subquery | set_values ) ;
 
 like_condition:
     like_condition_ -> ^(LIKE_CONDITION like_condition_) ;
@@ -566,7 +611,7 @@ like_condition_:
 	condition_field LIKE ( STRING_VALUE | LIKE_STRING_VALUE );
 
 condition_field:
-	field_spec | function_call ;
+	field | function_call ;
 
 set_values:
 	LPAREN! set_value_list RPAREN! ;
@@ -576,20 +621,6 @@ set_value_list:
 
 set_value_list_:
 	literal ( COMMA! literal )* ;
-
-/*************************************** FUNCTIONS **************************************/
-
-function_call:
-	function_name LPAREN! ( function_parameter_list )? RPAREN! ;
-
-function_parameter_list:
-    function_parameter_list_ -> ^(FUNCTION_PARAMETERS<FunctionParameters> function_parameter_list_) ;
-
-function_parameter_list_:
-	function_parameter ( COMMA! function_parameter )* ;
-
-function_parameter:
-	field_spec | literal | function_call ;
 
 /************************************** WITH CLAUSE *************************************/
 
@@ -641,7 +672,7 @@ group_by_list:
 	group_by_spec ( COMMA! group_by_spec )* ;
 
 group_by_spec:
-	field_spec | function_call ;
+	field | function_call ;
 
 /************************************ ORDER BY CLAUSE ***********************************/
 
@@ -661,5 +692,5 @@ order_by_nulls_clause:
     NULLS^ ( FIRST | LAST ) ;
 
 order_by_field:
-	field_spec | function_call ;
+	field | function_call ;
 	

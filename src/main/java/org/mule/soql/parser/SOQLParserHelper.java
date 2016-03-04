@@ -10,9 +10,9 @@ public class SOQLParserHelper {
 		try {
 			ANTLRStringStream input = new ANTLRStringStream(text);
 			TokenStream tokens = new CommonTokenStream(new SOQLLexer(input));
-			
+
 			SOQLParser parser = new SOQLParser(tokens);
-			SOQLParser.select_expression_return ret = parser.select_expression();
+			SOQLParser.soql_query_return ret = parser.soql_query();
 
 			CommonTree tree = ret.getTree();
 
@@ -28,5 +28,5 @@ public class SOQLParserHelper {
 			throw new SOQLParsingException("Recognition exception is never thrown, only declared.", e);
 		}
 	}
-	
+
 }
