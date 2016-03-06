@@ -9,14 +9,14 @@ options
 }
 
 tokens {
+    LITERAL;
     SOQL_QUERY;
     SOQL_SUBQUERY;
     FIELD_SPEC;
     FIELD;
     FUNCTION_CALL_SPEC;
     FUNCTION_CALL;
-    ALIAS;
-    OBJECT_REFERENCE_PREFIX;
+    OBJECT_PREFIX;
     TYPEOF_WHEN_THEN_CLAUSES;
     FUNCTION_PARAMETERS;
     FIELD_CONDITION;
@@ -336,13 +336,14 @@ data_category_group_name  : name ;
 data_category_name        : name ;
 
 alias_name                : ID | keywords_alias_allowed ;
-
-alias			          : alias_ -> ^(ALIAS<AliasNode> alias_) ;
-alias_			          : ( AS )? alias_name ;
+alias			          : ( AS! )? alias_name ;
 
 /********** LITERALS **********/
 
 literal:
+    literal_ -> ^(LITERAL<LiteralNode> literal_) ;
+
+literal_:
 	date_formula_literal | date_formula_n_literal | datetime_literal | date_literal | integer_literal | real_literal | string_literal | boolean_literal | null_literal ;
 
 date_formula_literal:
@@ -516,7 +517,7 @@ field:
     field_ -> ^(FIELD<FieldNode> field_) ;
 
 field_:
-    ( object_reference_prefix )? field_name ;
+    ( object_prefix )? field_name ;
 
 /*************************************** FUNCTION ***************************************/
 
@@ -527,7 +528,7 @@ function_call_:
 	function_name LPAREN! ( function_parameter_list )? RPAREN! ;
 
 function_parameter_list:
-    function_parameter_list_ -> ^(FUNCTION_PARAMETERS<FunctionParametersNode> function_parameter_list_) ;
+    function_parameter_list_ -> ^(FUNCTION_PARAMETERS function_parameter_list_) ;
 
 function_parameter_list_:
 	function_parameter ( COMMA! function_parameter )* ;
@@ -564,12 +565,12 @@ field_list:
 /************************************** FROM_CLAUSE *************************************/
 
 object_reference:
-	( object_reference_prefix )? object_name ( alias )? ;
+	( object_prefix )? object_name ( alias )? ;
 
-object_reference_prefix:
-    object_reference_prefix_ -> ^(OBJECT_REFERENCE_PREFIX<ObjectReferencePrefixNode> object_reference_prefix_) ;
+object_prefix:
+    object_prefix_ -> ^(OBJECT_PREFIX object_prefix_) ;
 
-object_reference_prefix_:
+object_prefix_:
     ( object_name DOT! )+ ;
 
 /*************************************** CONDITION **************************************/
@@ -640,13 +641,13 @@ data_category_spec_list:
 	data_category_spec ( AND! data_category_spec )* ;
 
 data_category_spec:
-    data_category_spec_ -> ^(DATA_CATEGORY_SPEC<WithDataCategorySpecNode> data_category_spec_) ;
+    data_category_spec_ -> ^(DATA_CATEGORY_SPEC<DataCategorySpecNode> data_category_spec_) ;
 
 data_category_spec_:
 	data_category_group_name data_category_filtering_selector data_category_parameter_list ;
 
 data_category_parameter_list:
-    data_category_parameter_list_ -> ^(DATA_CATEGORY_PARAMETERS<WithDataCategoryParametersNode> data_category_parameter_list_) ;
+    data_category_parameter_list_ -> ^(DATA_CATEGORY_PARAMETERS<DataCategoryParametersNode> data_category_parameter_list_) ;
 
 data_category_parameter_list_:
     data_category_name | LPAREN! data_category_name ( COMMA! data_category_name )* RPAREN! ;

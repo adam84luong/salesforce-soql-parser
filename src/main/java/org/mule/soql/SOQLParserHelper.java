@@ -1,14 +1,14 @@
-package org.mule.soql.helper;
+package org.mule.soql;
 
 import org.antlr.runtime.*;
-import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.exception.SOQLParsingException;
+import org.mule.soql.parser.SOQLCommonTree;
 import org.mule.soql.parser.SOQLLexer;
 import org.mule.soql.parser.SOQLParser;
 
 public class SOQLParserHelper {
 	
-	public CommonTree parseTextToTree(String text) throws SOQLParsingException {
+	public SOQLCommonTree parseTextToTree(String text) throws SOQLParsingException {
 		try {
 			ANTLRStringStream input = new ANTLRStringStream(text);
 			TokenStream tokens = new CommonTokenStream(new SOQLLexer(input));
@@ -16,7 +16,7 @@ public class SOQLParserHelper {
 			SOQLParser parser = new SOQLParser(tokens);
 			SOQLParser.soql_query_return ret = parser.soql_query();
 
-			CommonTree tree = ret.getTree();
+			SOQLCommonTree tree = (SOQLCommonTree) ret.getTree();
 
 			if(tree == null) {
 				throw new SOQLParsingException("The SOQL tree could not be generated due to an unexpected error.");

@@ -5,9 +5,9 @@ import org.antlr.runtime.CommonToken;
 /**
  * Created by damianpelaez on 2/23/16.
  */
-public class WithDataCategorySpecNode extends SOQLCommonTree {
+public class DataCategorySpecNode extends SOQLCommonTree {
 
-    public WithDataCategorySpecNode(int tokenType) {
+    public DataCategorySpecNode(int tokenType) {
         super(new CommonToken(tokenType, "DATA_CATEGORY_SPEC"));
     }
 

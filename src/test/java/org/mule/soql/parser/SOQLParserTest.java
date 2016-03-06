@@ -1,11 +1,10 @@
 package org.mule.soql.parser;
 
-import org.antlr.runtime.tree.CommonTree;
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.soql.helper.SOQLParserHelper;
+import org.mule.soql.SOQLParserHelper;
 
 import java.io.IOException;
 
@@ -34,7 +33,7 @@ public abstract class SOQLParserTest {
 
 	@Test
 	public void testSOQLLine() throws IOException {
-		CommonTree tree = parserHelper.parseTextToTree(line);
+		SOQLCommonTree tree = parserHelper.parseTextToTree(line);
 		assertNotNull(tree);
 	}
 
