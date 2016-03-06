@@ -5,9 +5,9 @@ import org.antlr.runtime.CommonToken;
 /**
  * Created by damianpelaez on 2/26/16.
  */
-public class SOQLSubQuery extends SOQLCommonTree {
+public class SOQLSubQueryNode extends SOQLCommonTree {
 
-    public SOQLSubQuery(int tokenType) {
+    public SOQLSubQueryNode(int tokenType) {
         super(new CommonToken(tokenType, "SOQL_SUBQUERY"));
     }
 

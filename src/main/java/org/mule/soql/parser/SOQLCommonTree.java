@@ -6,7 +6,7 @@ import org.antlr.runtime.tree.CommonTree;
 /**
  * Created by damianpelaez on 3/4/16.
  */
-public class SOQLCommonTree extends CommonTree {
+public abstract class SOQLCommonTree extends CommonTree {
 
     public SOQLCommonTree(CommonTree node) {
         super(node);
@@ -14,6 +14,10 @@ public class SOQLCommonTree extends CommonTree {
 
     public SOQLCommonTree(Token t) {
         super(t);
+    }
+
+    public String toSOQLText() {
+        return this.getText();
     }
 
 }

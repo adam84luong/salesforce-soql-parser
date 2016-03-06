@@ -5,9 +5,9 @@ import org.antlr.runtime.CommonToken;
 /**
  * Created by damianpelaez on 2/23/16.
  */
-public class FunctionCallSpec extends SOQLCommonTree {
+public class FunctionCallSpecNode extends SOQLCommonTree {
 
-    public FunctionCallSpec(int tokenType) {
+    public FunctionCallSpecNode(int tokenType) {
         super(new CommonToken(tokenType, "FUNCTION_CALL_SPEC"));
     }
 

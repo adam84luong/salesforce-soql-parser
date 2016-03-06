@@ -1,8 +1,10 @@
-package org.mule.soql.parser;
+package org.mule.soql.helper;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.exception.SOQLParsingException;
+import org.mule.soql.parser.SOQLLexer;
+import org.mule.soql.parser.SOQLParser;
 
 public class SOQLParserHelper {
 	
@@ -17,13 +19,13 @@ public class SOQLParserHelper {
 			CommonTree tree = ret.getTree();
 
 			if(tree == null) {
-				throw new SOQLParsingException("The SOQL tree could not be generated due to an unexpected error");
+				throw new SOQLParsingException("The SOQL tree could not be generated due to an unexpected error.");
 			}
 
 			return tree;
 
 		} catch (NoViableAltException e) {
-			throw new SOQLParsingException("Syntax error close to '" + e.token.getText() + "' (position: " + e.charPositionInLine + ")", e);
+			throw new SOQLParsingException("Syntax error close to '" + e.token.getText() + "' (position: " + e.charPositionInLine + ").", e);
 		}  catch (RecognitionException e) {
 			throw new SOQLParsingException("Recognition exception is never thrown, only declared.", e);
 		}

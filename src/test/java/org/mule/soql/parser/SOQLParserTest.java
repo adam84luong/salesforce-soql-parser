@@ -5,12 +5,11 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.soql.exception.SOQLParsingException;
+import org.mule.soql.helper.SOQLParserHelper;
 
 import java.io.IOException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 
 public abstract class SOQLParserTest {

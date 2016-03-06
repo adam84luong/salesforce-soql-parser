@@ -5,10 +5,11 @@ import org.antlr.runtime.CommonToken;
 /**
  * Created by damianpelaez on 2/23/16.
  */
-public class Field extends SOQLCommonTree {
+public class FieldNode extends SOQLCommonTree {
 
-    public Field(int tokenType) {
+    public FieldNode(int tokenType) {
         super(new CommonToken(tokenType, "FIELD"));
     }
 
 }
+
