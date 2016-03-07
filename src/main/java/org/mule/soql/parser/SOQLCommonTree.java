@@ -19,10 +19,6 @@ public abstract class SOQLCommonTree extends CommonTree {
         super(t);
     }
 
-    protected Boolean matchesLabel(CommonTree node, String label) {
-        return node != null && label != null && label.equalsIgnoreCase(node.getText());
-    }
-
     public <T extends SOQLData> T createSOQLData() {
         return (T) new SOQLData();
     }

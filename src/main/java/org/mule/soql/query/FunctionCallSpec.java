@@ -3,15 +3,15 @@ package org.mule.soql.query;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class FieldSpec extends SOQLData {
-    private Field field;
+public class FunctionCallSpec extends SOQLData {
+    private FunctionCall functionCall;
     private String alias;
 
-    public FieldSpec() {
+    public FunctionCallSpec() {
     }
 
-    public FieldSpec(Field field, String alias) {
-        this.field = field;
+    public FunctionCallSpec(FunctionCall functionCall, String alias) {
+        this.functionCall = functionCall;
         this.alias = alias;
     }
 
@@ -19,8 +19,8 @@ public class FieldSpec extends SOQLData {
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
-        if(field != null) {
-            sb.append(field.toSOQLText());
+        if(functionCall != null) {
+            sb.append(functionCall.toSOQLText());
         }
 
         if(alias != null) {
@@ -30,12 +30,12 @@ public class FieldSpec extends SOQLData {
         return sb.toString();
     }
 
-    public Field getField() {
-        return field;
+    public FunctionCall getFunctionCall() {
+        return functionCall;
     }
 
-    public void setField(Field field) {
-        this.field = field;
+    public void setFunctionCall(FunctionCall functionCall) {
+        this.functionCall = functionCall;
     }
 
     public String getAlias() {

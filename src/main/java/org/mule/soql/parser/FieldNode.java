@@ -2,6 +2,7 @@ package org.mule.soql.parser;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
+import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.Field;
 
 import java.util.ArrayList;
@@ -18,28 +19,33 @@ public class FieldNode extends SOQLCommonTree {
 
     @Override
     public Field createSOQLData() {
-        CommonTree firstChild = (CommonTree) this.getChild(0);
-        CommonTree secondChild = (CommonTree) this.getChild(1);
+        Field field = new Field();
 
-        List<String> objectNames = null;
-        String fieldName = null;
+        this.processFirstNode(field);
+        this.processSecondNode(field);
 
-        if (firstChild != null) {
-            if(this.matchesLabel(firstChild,"OBJECT_PREFIX")){
-                objectNames = this.createObjectNameList(firstChild);
-            } else {
-                fieldName = firstChild.getText();
-            }
-        }
-
-        if (secondChild != null) {
-            fieldName = secondChild.getText();
-        }
-
-        return new Field(objectNames,fieldName);
+        return field;
     }
 
-    private List<String> createObjectNameList(CommonTree node) {
+    private void processFirstNode(Field field) {
+        CommonTree child = (CommonTree) this.getChild(0);
+
+        if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.OBJECT_PREFIX)) {
+            field.setObjectNames(this.createObjectNames(child));
+        } else {
+            field.setFieldName(child.getText());
+        }
+    }
+
+    private void processSecondNode(Field field) {
+        CommonTree child = (CommonTree) this.getChild(1);
+
+        if (child != null) {
+            field.setFieldName(child.getText());
+        }
+    }
+
+    private List<String> createObjectNames(CommonTree node) {
         List<String> objectNames = new ArrayList<String>();
 
         List<CommonTree> children = (List<CommonTree>) node.getChildren();

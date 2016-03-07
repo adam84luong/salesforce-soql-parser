@@ -1,17 +1,19 @@
 package org.mule.soql.query;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class Field extends SOQLData implements Parameter {
+public class Field extends SOQLData implements FunctionParameter {
     private List<String> objectNames;
     private String fieldName;
 
+    public Field() {
+    }
+
     public Field(List<String> objectNames, String fieldName) {
-        this.objectNames = objectNames != null ? objectNames : new ArrayList<String>();
+        this.objectNames = objectNames;
         this.fieldName = fieldName;
     }
 
@@ -34,8 +36,16 @@ public class Field extends SOQLData implements Parameter {
         return objectNames;
     }
 
+    public void setObjectNames(List<String> objectNames) {
+        this.objectNames = objectNames;
+    }
+
     public String getFieldName() {
         return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
 }

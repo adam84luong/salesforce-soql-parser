@@ -2,6 +2,7 @@ package org.mule.soql.parser;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
+import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.Field;
 import org.mule.soql.query.FieldSpec;
 
@@ -16,21 +17,28 @@ public class FieldSpecNode extends SOQLCommonTree {
 
     @Override
     public FieldSpec createSOQLData() {
-        CommonTree firstChild = (CommonTree) this.getChild(0);
-        CommonTree secondChild = (CommonTree) this.getChild(1);
+        FieldSpec fieldSpec = new FieldSpec();
 
-        Field field = null;
-        String alias = null;
+        this.processFirstNode(fieldSpec);
+        this.processSecondNode(fieldSpec);
 
-        if (this.matchesLabel(firstChild,"FIELD")) {
-            field = this.createField((SOQLCommonTree) firstChild);
+        return fieldSpec;
+    }
+
+    private void processFirstNode(FieldSpec fieldSpec) {
+        CommonTree child = (CommonTree) this.getChild(0);
+
+        if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.FIELD)) {
+            fieldSpec.setField(this.createField((SOQLCommonTree) child));
         }
+    }
 
-        if (secondChild != null) {
-            alias = secondChild.getText();
+    private void processSecondNode(FieldSpec fieldSpec) {
+        CommonTree child = (CommonTree) this.getChild(1);
+
+        if (child != null) {
+            fieldSpec.setAlias(child.getText());
         }
-
-        return new FieldSpec(field, alias);
     }
 
     private Field createField(SOQLCommonTree node) {

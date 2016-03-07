@@ -3,8 +3,11 @@ package org.mule.soql.query;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class Literal extends SOQLData implements Parameter {
+public class Literal extends SOQLData implements FunctionParameter {
     private String value;
+
+    public Literal() {
+    }
 
     public Literal(String value) {
         this.value = value;
@@ -17,6 +20,10 @@ public class Literal extends SOQLData implements Parameter {
 
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

@@ -2,8 +2,9 @@ package org.mule.soql.parser;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
+import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.FunctionCall;
-import org.mule.soql.query.Parameter;
+import org.mule.soql.query.FunctionParameter;
 import org.mule.soql.query.SOQLData;
 
 import java.util.ArrayList;
@@ -20,38 +21,45 @@ public class FunctionCallNode extends SOQLCommonTree {
 
     @Override
     public FunctionCall createSOQLData() {
-        CommonTree firstChild = (CommonTree) this.getChild(0);
-        CommonTree secondChild = (CommonTree) this.getChild(1);
+        FunctionCall functionCall = new FunctionCall();
 
-        String functionName = null;
-        List<Parameter> parameters = null;
+        this.processFirstNode(functionCall);
+        this.processSecondNode(functionCall);
 
-        if (firstChild != null) {
-            functionName = firstChild.getText();
-        }
-
-        if (this.matchesLabel(secondChild,"FUNCTION_PARAMETERS")) {
-            parameters = this.createParameters(secondChild);
-        }
-
-        return new FunctionCall(functionName,parameters);
+        return functionCall;
     }
 
-    private List<Parameter> createParameters(CommonTree node) {
-        List<Parameter> parameters = new ArrayList<Parameter>();
+    private void processFirstNode(FunctionCall functionCall) {
+        CommonTree child = (CommonTree) this.getChild(0);
+
+        if (child != null) {
+            functionCall.setFunctionName(child.getText());
+        }
+    }
+
+    private void processSecondNode(FunctionCall functionCall) {
+        CommonTree child = (CommonTree) this.getChild(1);
+
+        if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.FUNCTION_PARAMETERS)) {
+            functionCall.setFunctionParameters(this.createFunctionParameters(child));
+        }
+    }
+
+    private List<FunctionParameter> createFunctionParameters(CommonTree node) {
+        List<FunctionParameter> functionParameters = new ArrayList<FunctionParameter>();
 
         List<SOQLCommonTree> children = (List<SOQLCommonTree>) node.getChildren();
 
         if(children != null) {
             for(SOQLCommonTree child : children) {
                 SOQLData soqlData = child.createSOQLData();
-                if(soqlData instanceof Parameter) {
-                    parameters.add((Parameter) soqlData);
+                if(soqlData instanceof FunctionParameter) {
+                    functionParameters.add((FunctionParameter) soqlData);
                 }
             }
         }
 
-        return parameters;
+        return functionParameters;
 
     }
 

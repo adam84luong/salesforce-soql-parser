@@ -1,18 +1,20 @@
 package org.mule.soql.query;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class FunctionCall extends SOQLData implements Parameter {
+public class FunctionCall extends SOQLData implements FunctionParameter {
     private String functionName;
-    private List<Parameter> parameters;
+    private List<FunctionParameter> functionParameters;
 
-    public FunctionCall(String functionName, List<Parameter> parameters) {
+    public FunctionCall() {
+    }
+
+    public FunctionCall(String functionName, List<FunctionParameter> functionParameters) {
         this.functionName = functionName;
-        this.parameters = parameters != null ? parameters : new ArrayList<Parameter>();
+        this.functionParameters = functionParameters;
     }
 
     @Override
@@ -25,12 +27,12 @@ public class FunctionCall extends SOQLData implements Parameter {
 
         sb.append("(");
 
-        if(parameters != null) {
-            for(Parameter parameter : parameters) {
-                if(!parameter.equals(parameters.get(0))) {
+        if(functionParameters != null) {
+            for(FunctionParameter functionParameter : functionParameters) {
+                if(!functionParameter.equals(functionParameters.get(0))) {
                     sb.append(",");
                 }
-                sb.append(parameter.toSOQLText());
+                sb.append(functionParameter.toSOQLText());
             }
         }
 
@@ -43,8 +45,16 @@ public class FunctionCall extends SOQLData implements Parameter {
         return functionName;
     }
 
-    public List<Parameter> getParameters() {
-        return parameters;
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
+    }
+
+    public List<FunctionParameter> getFunctionParameters() {
+        return functionParameters;
+    }
+
+    public void setFunctionParameters(List<FunctionParameter> functionParameters) {
+        this.functionParameters = functionParameters;
     }
 
 }

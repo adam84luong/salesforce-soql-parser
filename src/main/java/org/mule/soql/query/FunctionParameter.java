@@ -3,7 +3,7 @@ package org.mule.soql.query;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public interface Parameter {
+public interface FunctionParameter {
 
     String toSOQLText();
 
