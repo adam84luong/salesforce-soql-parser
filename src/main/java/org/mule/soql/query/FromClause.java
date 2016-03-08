@@ -23,13 +23,17 @@ public class FromClause extends SOQLData {
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
+        sb.append("FROM").append(" ");
+
         if(objectNames != null) {
             for(String objectName : objectNames) {
                 sb.append(objectName).append(".");
             }
         }
 
-        sb.append(objectName);
+        if(objectName != null) {
+            sb.append(objectName);
+        }
 
         if(alias != null) {
             sb.append(" ").append(alias);

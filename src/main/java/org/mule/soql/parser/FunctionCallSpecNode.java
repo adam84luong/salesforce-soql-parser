@@ -40,7 +40,7 @@ public class FunctionCallSpecNode extends SOQLCommonTree {
     }
 
     private void createFunctionCall(CommonTree node, FunctionCallSpec functionCallSpec) {
-        if (!SOQLCommonTreeUtils.matchesType(node,SOQLParser.FUNCTION_CALL)) { return; }
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FUNCTION_CALL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
 

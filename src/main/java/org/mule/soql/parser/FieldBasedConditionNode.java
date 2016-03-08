@@ -47,7 +47,7 @@ public class FieldBasedConditionNode extends SOQLCommonTree {
     }
 
     private void createConditionField(CommonTree node, FieldBasedCondition fieldBasedCondition) {
-        if (!SOQLCommonTreeUtils.matchesType(node,SOQLParser.FIELD) && !SOQLCommonTreeUtils.matchesType(node,SOQLParser.FUNCTION_CALL)) { return; }
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
 
@@ -61,7 +61,7 @@ public class FieldBasedConditionNode extends SOQLCommonTree {
     }
 
     private void createLiteral(CommonTree node, FieldBasedCondition fieldBasedCondition) {
-        if (!SOQLCommonTreeUtils.matchesType(node,SOQLParser.LITERAL)) { return; }
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.LITERAL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
 

@@ -37,7 +37,7 @@ public class LikeBasedConditionNode extends SOQLCommonTree {
     }
 
     private void createConditionField(CommonTree node, LikeBasedCondition likeBasedCondition) {
-        if (!SOQLCommonTreeUtils.matchesType(node,SOQLParser.FIELD) && !SOQLCommonTreeUtils.matchesType(node,SOQLParser.FUNCTION_CALL)) { return; }
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
 

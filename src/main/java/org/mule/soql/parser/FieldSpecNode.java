@@ -28,19 +28,21 @@ public class FieldSpecNode extends SOQLCommonTree {
     private void processFirstNode(FieldSpec fieldSpec) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        this.createField(child,fieldSpec);
+        if (child == null) { return; }
+
+        this.createField(child, fieldSpec);
     }
 
     private void processSecondNode(FieldSpec fieldSpec) {
         CommonTree child = (CommonTree) this.getChild(1);
 
-        if (child != null) {
-            fieldSpec.setAlias(child.getText());
-        }
+        if (child == null) { return; }
+
+        fieldSpec.setAlias(child.getText());
     }
 
     private void createField(CommonTree node, FieldSpec fieldSpec) {
-        if (!SOQLCommonTreeUtils.matchesType(node,SOQLParser.FIELD)) { return; }
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
 

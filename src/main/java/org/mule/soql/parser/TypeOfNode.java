@@ -46,23 +46,25 @@ public class TypeOfNode extends SOQLCommonTree {
     }
 
     private void createWhenThenClauses(CommonTree node, TypeOf typeOf) {
-        if (!SOQLCommonTreeUtils.matchesType(node,SOQLParser.TYPEOF_WHEN_THEN_CLAUSES)) { return; }
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.TYPEOF_WHEN_THEN_CLAUSES)) { return; }
 
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
 
+        if(children == null) { return; }
+
         for(CommonTree child : children) {
-            this.createWhenThenClause(child,typeOf);
+            this.createWhenThenClause(child, typeOf);
         }
     }
 
     private void createWhenThenClause(CommonTree node, TypeOf typeOf) {
-        if(!SOQLCommonTreeUtils.matchesType(node,SOQLParser.WHEN)) { return; }
+        if(!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.WHEN)) { return; }
 
-        String objectName = this.processWhenThenClauseObjectName(node);
-        this.processWhenThenClauseFields(objectName,node,typeOf);
+        String objectName = this.createWhenThenClauseObjectName(node);
+        this.createWhenThenClauseFields(objectName, node, typeOf);
     }
 
-    private String processWhenThenClauseObjectName(CommonTree node) {
+    private String createWhenThenClauseObjectName(CommonTree node) {
         CommonTree child = (CommonTree) node.getChild(0);
 
         if(child == null) { return null;}
@@ -70,15 +72,17 @@ public class TypeOfNode extends SOQLCommonTree {
         return child.getText();
     }
 
-    private void processWhenThenClauseFields(String objectName, CommonTree node, TypeOf typeOf) {
+    private void createWhenThenClauseFields(String objectName, CommonTree node, TypeOf typeOf) {
         CommonTree child = (CommonTree) node.getChild(1);
 
-        if(!SOQLCommonTreeUtils.matchesType(child,SOQLParser.THEN)) { return; }
+        if(!SOQLCommonTreeUtils.matchesAnyType(child, SOQLParser.THEN)) { return; }
 
         List<CommonTree> subChildren = (List<CommonTree>) child.getChildren();
 
+        if(subChildren == null) { return; }
+
         for(CommonTree subChild : subChildren) {
-            if(SOQLCommonTreeUtils.matchesType(subChild,SOQLParser.FIELD)) {
+            if(SOQLCommonTreeUtils.matchesAnyType(subChild, SOQLParser.FIELD)) {
                 FieldNode fieldNode = (FieldNode) subChild;
                 typeOf.addWhenThenField(objectName, fieldNode.createSOQLData());
             }
@@ -86,12 +90,14 @@ public class TypeOfNode extends SOQLCommonTree {
     }
 
     private void createElseClause(CommonTree node, TypeOf typeOf) {
-        if(!SOQLCommonTreeUtils.matchesType(node,SOQLParser.ELSE)) { return; }
+        if(!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.ELSE)) { return; }
 
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
 
+        if(children == null) { return; }
+
         for(CommonTree child : children) {
-            if(SOQLCommonTreeUtils.matchesType(child,SOQLParser.FIELD)) {
+            if(SOQLCommonTreeUtils.matchesAnyType(child, SOQLParser.FIELD)) {
                 FieldNode fieldNode = (FieldNode) child;
                 typeOf.addElseField(fieldNode.createSOQLData());
             }

@@ -450,7 +450,7 @@ from_clause:
     FROM<FromClauseNode>^ object_reference ( COMMA! object_reference )* ;
 
 using_clause:
-	USING<UsingClauseNode>^ SCOPE! filter_scope_name ;
+	USING^ SCOPE! filter_scope_name ;
 
 where_clause:
 	WHERE<WhereClauseNode>^ condition ;
@@ -465,16 +465,16 @@ orderby_clause:
 	ORDER<OrderByClauseNode>^ BY! order_by_list ;
 
 limit_clause:
-	LIMIT<LimitClauseNode>^ UNSIGNED_INTEGER ;
+	LIMIT^ UNSIGNED_INTEGER ;
 	
 offset_clause:
-	OFFSET<OffsetClauseNode>^ UNSIGNED_INTEGER ;
+	OFFSET^ UNSIGNED_INTEGER ;
 
 for_clause:
-    FOR<ForClauseNode>^ (REFERENCE | VIEW | UPDATE) ;
+    FOR^ (REFERENCE | VIEW | UPDATE) ;
 
 update_clause:
-    UPDATE<UpdateClauseNode>^ (TRACKING | VIEWSTAT) ;
+    UPDATE^ (TRACKING | VIEWSTAT) ;
 
 /************************************ SELECT SUBQUERY ***********************************/
 
@@ -579,10 +579,10 @@ field_operator : EQ_SYM | NOT_EQ | LET | GET | GTH | LTH ;
 set_operator   : IN | NOT IN! | INCLUDES | EXCLUDES;
 
 condition:
-	condition1 ( ( OR<OrNode>^ | AND<AndNode>^ ) condition1 )* ;
+	condition1 ( ( OR<LogicalOperatorNode>^ | AND<LogicalOperatorNode>^ ) condition1 )* ;
 
 condition1:
-	( NOT<NotNode>^ )? ( simple_condition | parenthesized_condition ) ;
+	( NOT<NotOperatorNode>^ )? ( simple_condition | parenthesized_condition ) ;
 
 parenthesized_condition:
     parenthesized_condition_ -> ^(PARENTHESIZED_CONDITION<ParenthesizedConditionNode> parenthesized_condition_) ;
@@ -658,16 +658,16 @@ data_category_filtering_selector:
 /************************************ GROUP BY CLAUSE ***********************************/
 
 group_by_plain_clause:
-    group_by_plain_clause_ -> ^(GROUP_BY_PLAIN_CLAUSE<GroupByPlainClauseNode> group_by_plain_clause_) ;
+    group_by_plain_clause_ -> ^(GROUP_BY_PLAIN_CLAUSE group_by_plain_clause_) ;
 
 group_by_plain_clause_:
 	group_by_list ;
 
 group_by_rollup_clause:
-	ROLLUP<GroupByRollupClauseNode>^ LPAREN! group_by_list RPAREN! ;
+	ROLLUP^ LPAREN! group_by_list RPAREN! ;
 
 group_by_cube_clause:
-	CUBE<GroupByCubeClauseNode>^ LPAREN! group_by_list RPAREN! ;
+	CUBE^ LPAREN! group_by_list RPAREN! ;
 
 group_by_list:
 	group_by_spec ( COMMA! group_by_spec )* ;
@@ -690,7 +690,7 @@ order_by_direction_clause:
     ASC | DESC ;
 
 order_by_nulls_clause:
-    NULLS<NullsClauseNode>^ ( FIRST | LAST ) ;
+    NULLS^ ( FIRST | LAST ) ;
 
 order_by_field:
 	field | function_call ;

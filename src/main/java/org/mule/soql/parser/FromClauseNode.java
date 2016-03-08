@@ -30,7 +30,9 @@ public class FromClauseNode extends SOQLCommonTree {
     private void processFirstNode(FromClause fromClause) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.OBJECT_PREFIX)) {
+        if(child == null) { return; }
+
+        if (SOQLCommonTreeUtils.matchesAnyType(child,SOQLParser.OBJECT_PREFIX)) {
             this.createObjectNames(child,fromClause);
         } else {
             fromClause.setObjectName(child.getText());
@@ -40,30 +42,30 @@ public class FromClauseNode extends SOQLCommonTree {
     private void processSecondNode(FromClause fromClause) {
         CommonTree child = (CommonTree) this.getChild(1);
 
-        if (child != null) {
-            if(fromClause.getObjectName() == null) {
-                fromClause.setObjectName(child.getText());
-            } else {
-                fromClause.setAlias(child.getText());
-            }
+        if(child == null) { return; }
+
+        if(fromClause.getObjectName() == null) {
+            fromClause.setObjectName(child.getText());
+        } else {
+            fromClause.setAlias(child.getText());
         }
     }
 
     private void processThirdNode(FromClause fromClause) {
         CommonTree child = (CommonTree) this.getChild(2);
 
-        if (child != null) {
-            fromClause.setAlias(child.getText());
-        }
+        if(child == null) { return; }
+
+        fromClause.setAlias(child.getText());
     }
 
     private void createObjectNames(CommonTree node, FromClause fromClause) {
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
 
-        if(children != null) {
-            for(CommonTree child : children) {
-                fromClause.addObjectName(child.getText());
-            }
+        if(children == null) { return; }
+
+        for(CommonTree child : children) {
+            fromClause.addObjectName(child.getText());
         }
     }
 

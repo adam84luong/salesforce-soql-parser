@@ -29,7 +29,9 @@ public class FieldNode extends SOQLCommonTree {
     private void processFirstNode(Field field) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.OBJECT_PREFIX)) {
+        if (child == null) { return; }
+
+        if (SOQLCommonTreeUtils.matchesAnyType(child,SOQLParser.OBJECT_PREFIX)) {
             this.createObjectNames(child,field);
         } else {
             field.setFieldName(child.getText());
@@ -39,7 +41,9 @@ public class FieldNode extends SOQLCommonTree {
     private void processSecondNode(Field field) {
         CommonTree child = (CommonTree) this.getChild(1);
 
-        if (child != null && field.getFieldName() == null) {
+        if (child == null) { return; }
+
+        if (field.getFieldName() == null) {
             field.setFieldName(child.getText());
         }
     }
@@ -47,10 +51,10 @@ public class FieldNode extends SOQLCommonTree {
     private void createObjectNames(CommonTree node, Field field) {
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
 
-        if(children != null) {
-            for(CommonTree child : children) {
-                field.addObjectName(child.getText());
-            }
+        if (children == null) { return; }
+
+        for(CommonTree child : children) {
+            field.addObjectName(child.getText());
         }
     }
 

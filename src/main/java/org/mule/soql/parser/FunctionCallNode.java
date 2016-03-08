@@ -31,30 +31,37 @@ public class FunctionCallNode extends SOQLCommonTree {
     private void processFirstNode(FunctionCall functionCall) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        if (child != null) {
-            functionCall.setFunctionName(child.getText());
-        }
+        if (child == null) { return; }
+
+        functionCall.setFunctionName(child.getText());
     }
 
     private void processSecondNode(FunctionCall functionCall) {
         CommonTree child = (CommonTree) this.getChild(1);
 
-        if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.FUNCTION_PARAMETERS)) {
-            this.createFunctionParameters(child,functionCall);
+        if (child == null) { return; }
+
+        this.createFunctionParameters(child, functionCall);
+    }
+
+    private void createFunctionParameters(CommonTree node, FunctionCall functionCall) {
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FUNCTION_PARAMETERS)) { return; }
+
+        List<CommonTree> children = (List<CommonTree>) node.getChildren();
+
+        if (children == null) { return; }
+
+        for (CommonTree child : children) {
+            this.createFunctionParameter(child, functionCall);
         }
     }
 
-    private void createFunctionParameters(CommonTree node,FunctionCall functionCall) {
-        List<SOQLCommonTree> children = (List<SOQLCommonTree>) node.getChildren();
+    private void createFunctionParameter(CommonTree node, FunctionCall functionCall) {
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL, SOQLParser.LITERAL)) { return; }
 
-        if(children != null) {
-            for(SOQLCommonTree child : children) {
-                SOQLData soqlData = child.createSOQLData();
-                if(soqlData!= null && soqlData instanceof FunctionParameter) {
-                    functionCall.addFunctionParameter((FunctionParameter) soqlData);
-                }
-            }
-        }
+        SOQLCommonTree soqlNode = (SOQLCommonTree) node;
+
+        functionCall.addFunctionParameter((FunctionParameter) soqlNode.createSOQLData());
     }
 
 }

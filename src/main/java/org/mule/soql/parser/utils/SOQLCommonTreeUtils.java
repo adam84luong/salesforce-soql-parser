@@ -11,39 +11,42 @@ import java.util.Set;
  */
 public class SOQLCommonTreeUtils {
 
-    private static Set<Integer> fieldOperators = createFieldOperators();
-    private static Set<Integer> setOperators = createSetOperators();
+    public static Boolean matchesAnyType(CommonTree node, Integer... types) {
+        if(node == null || types == null) { return false; }
 
-    private static Set<Integer> createFieldOperators() {
-        Set<Integer> fieldOperators = new HashSet<Integer>();
-        fieldOperators.add(SOQLParser.EQ_SYM);
-        fieldOperators.add(SOQLParser.NOT_EQ);
-        fieldOperators.add(SOQLParser.LET);
-        fieldOperators.add(SOQLParser.GET);
-        fieldOperators.add(SOQLParser.LTH);
-        fieldOperators.add(SOQLParser.GTH);
-        return fieldOperators;
-    }
+        for(Integer type : types) {
+            if(type != null && type.equals(node.getType())){
+                return true;
+            }
+        }
 
-    private static Set<Integer> createSetOperators() {
-        Set<Integer> setOperators = new HashSet<Integer>();
-        setOperators.add(SOQLParser.NOT);
-        setOperators.add(SOQLParser.IN);
-        setOperators.add(SOQLParser.INCLUDES);
-        setOperators.add(SOQLParser.EXCLUDES);
-        return setOperators;
-    }
-
-    public static Boolean matchesType(CommonTree node, Integer type) {
-        return node != null && type != null && type.equals(node.getType());
+        return false;
     }
 
     public static Boolean isFieldOperator(CommonTree node) {
-        return node != null && fieldOperators.contains(node.getType());
+        return matchesAnyType(node, SOQLParser.EQ_SYM,
+                                    SOQLParser.NOT_EQ,
+                                    SOQLParser.LET,
+                                    SOQLParser.GET,
+                                    SOQLParser.LTH,
+                                    SOQLParser.GTH);
     }
 
-    public static Boolean isSetOperator(CommonTree node) {
-        return node != null && setOperators.contains(node.getType());
+    public static boolean isSetOperator(CommonTree node) {
+        return matchesAnyType(node, SOQLParser.NOT,
+                                    SOQLParser.IN,
+                                    SOQLParser.INCLUDES,
+                                    SOQLParser.EXCLUDES);
+    }
+
+    public static Boolean isCondition(CommonTree node) {
+        return matchesAnyType(node, SOQLParser.LIKE_BASED_CONDITION,
+                                    SOQLParser.FIELD_BASED_CONDITION,
+                                    SOQLParser.SET_BASED_CONDITION,
+                                    SOQLParser.PARENTHESIZED_CONDITION,
+                                    SOQLParser.AND,
+                                    SOQLParser.OR,
+                                    SOQLParser.NOT);
     }
 
 }
