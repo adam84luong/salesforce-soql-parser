@@ -7,7 +7,6 @@ import org.mule.soql.query.FunctionCall;
 import org.mule.soql.query.FunctionParameter;
 import org.mule.soql.query.SOQLData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,26 +40,21 @@ public class FunctionCallNode extends SOQLCommonTree {
         CommonTree child = (CommonTree) this.getChild(1);
 
         if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.FUNCTION_PARAMETERS)) {
-            functionCall.setFunctionParameters(this.createFunctionParameters(child));
+            this.createFunctionParameters(child,functionCall);
         }
     }
 
-    private List<FunctionParameter> createFunctionParameters(CommonTree node) {
-        List<FunctionParameter> functionParameters = new ArrayList<FunctionParameter>();
-
+    private void createFunctionParameters(CommonTree node,FunctionCall functionCall) {
         List<SOQLCommonTree> children = (List<SOQLCommonTree>) node.getChildren();
 
         if(children != null) {
             for(SOQLCommonTree child : children) {
                 SOQLData soqlData = child.createSOQLData();
-                if(soqlData instanceof FunctionParameter) {
-                    functionParameters.add((FunctionParameter) soqlData);
+                if(soqlData!= null && soqlData instanceof FunctionParameter) {
+                    functionCall.addFunctionParameter((FunctionParameter) soqlData);
                 }
             }
         }
-
-        return functionParameters;
-
     }
 
 }

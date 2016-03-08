@@ -1,22 +1,22 @@
 package org.mule.soql.query;
 
-import org.mule.soql.query.condition.ConditionField;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class Field extends SOQLData implements FunctionParameter,ConditionField {
+public class FromClause extends SOQLData {
     private List<String> objectNames = new ArrayList<String>();
-    private String fieldName;
+    private String objectName;
+    private String alias;
 
-    public Field() {
+    public FromClause() {
     }
 
-    public Field(String fieldName) {
-        this.fieldName = fieldName;
+    public FromClause(String objectName, String alias) {
+        this.objectName = objectName;
+        this.alias = alias;
     }
 
     @Override
@@ -29,7 +29,11 @@ public class Field extends SOQLData implements FunctionParameter,ConditionField 
             }
         }
 
-        sb.append(fieldName);
+        sb.append(objectName);
+
+        if(alias != null) {
+            sb.append(" ").append(alias);
+        }
 
         return sb.toString();
     }
@@ -44,16 +48,24 @@ public class Field extends SOQLData implements FunctionParameter,ConditionField 
         objectNames.add(objectName);
     }
 
-    public String getFieldName() {
-        return fieldName;
+    public String getObjectName() {
+        return objectName;
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+    public void setObjectName(String objectName) {
+        this.objectName = objectName;
     }
 
     public List<String> getObjectNames() {
         return objectNames;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
 }

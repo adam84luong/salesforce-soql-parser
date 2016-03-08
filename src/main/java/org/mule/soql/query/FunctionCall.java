@@ -1,20 +1,22 @@
 package org.mule.soql.query;
 
+import org.mule.soql.query.condition.ConditionField;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class FunctionCall extends SOQLData implements FunctionParameter {
+public class FunctionCall extends SOQLData implements FunctionParameter,ConditionField {
     private String functionName;
-    private List<FunctionParameter> functionParameters;
+    private List<FunctionParameter> functionParameters = new ArrayList<FunctionParameter>();
 
     public FunctionCall() {
     }
 
-    public FunctionCall(String functionName, List<FunctionParameter> functionParameters) {
+    public FunctionCall(String functionName) {
         this.functionName = functionName;
-        this.functionParameters = functionParameters;
     }
 
     @Override
@@ -41,6 +43,16 @@ public class FunctionCall extends SOQLData implements FunctionParameter {
         return sb.toString();
     }
 
+    public void addFunctionParameter(FunctionParameter functionParameter) {
+        if(functionParameter == null) { return; }
+
+        if(functionParameters == null) {
+            functionParameters = new ArrayList<FunctionParameter>();
+        }
+
+        functionParameters.add(functionParameter);
+    }
+
     public String getFunctionName() {
         return functionName;
     }
@@ -51,10 +63,6 @@ public class FunctionCall extends SOQLData implements FunctionParameter {
 
     public List<FunctionParameter> getFunctionParameters() {
         return functionParameters;
-    }
-
-    public void setFunctionParameters(List<FunctionParameter> functionParameters) {
-        this.functionParameters = functionParameters;
     }
 
 }

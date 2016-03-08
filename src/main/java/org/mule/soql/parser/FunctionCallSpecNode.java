@@ -28,9 +28,7 @@ public class FunctionCallSpecNode extends SOQLCommonTree {
     private void processFirstNode(FunctionCallSpec functionCallSpec) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.FUNCTION_CALL)) {
-            functionCallSpec.setFunctionCall(this.createFunctionCall((SOQLCommonTree) child));
-        }
+        this.createFunctionCall(child,functionCallSpec);
     }
 
     private void processSecondNode(FunctionCallSpec functionCallSpec) {
@@ -41,8 +39,12 @@ public class FunctionCallSpecNode extends SOQLCommonTree {
         }
     }
 
-    private FunctionCall createFunctionCall(SOQLCommonTree node) {
-        return node.createSOQLData();
+    private void createFunctionCall(CommonTree node, FunctionCallSpec functionCallSpec) {
+        if (!SOQLCommonTreeUtils.matchesType(node,SOQLParser.FUNCTION_CALL)) { return; }
+
+        SOQLCommonTree soqlNode = (SOQLCommonTree) node;
+
+        functionCallSpec.setFunctionCall((FunctionCall) soqlNode.createSOQLData());
     }
 
 }

@@ -3,7 +3,7 @@ package org.mule.soql.query;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class FunctionCallSpec extends SOQLData {
+public class FunctionCallSpec extends SOQLData implements SelectRef {
     private FunctionCall functionCall;
     private String alias;
 

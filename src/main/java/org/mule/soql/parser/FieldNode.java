@@ -5,7 +5,6 @@ import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.Field;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ public class FieldNode extends SOQLCommonTree {
         CommonTree child = (CommonTree) this.getChild(0);
 
         if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.OBJECT_PREFIX)) {
-            field.setObjectNames(this.createObjectNames(child));
+            this.createObjectNames(child,field);
         } else {
             field.setFieldName(child.getText());
         }
@@ -40,23 +39,19 @@ public class FieldNode extends SOQLCommonTree {
     private void processSecondNode(Field field) {
         CommonTree child = (CommonTree) this.getChild(1);
 
-        if (child != null) {
+        if (child != null && field.getFieldName() == null) {
             field.setFieldName(child.getText());
         }
     }
 
-    private List<String> createObjectNames(CommonTree node) {
-        List<String> objectNames = new ArrayList<String>();
-
+    private void createObjectNames(CommonTree node, Field field) {
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
 
         if(children != null) {
             for(CommonTree child : children) {
-                objectNames.add(child.getText());
+                field.addObjectName(child.getText());
             }
         }
-
-        return objectNames;
     }
 
 }

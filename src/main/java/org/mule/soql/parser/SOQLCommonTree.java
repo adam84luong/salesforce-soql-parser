@@ -20,7 +20,7 @@ public abstract class SOQLCommonTree extends CommonTree {
     }
 
     public <T extends SOQLData> T createSOQLData() {
-        return (T) new SOQLData();
+        return null;
     }
 
 }

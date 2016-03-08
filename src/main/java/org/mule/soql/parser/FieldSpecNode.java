@@ -28,9 +28,7 @@ public class FieldSpecNode extends SOQLCommonTree {
     private void processFirstNode(FieldSpec fieldSpec) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        if (SOQLCommonTreeUtils.matchesType(child,SOQLParser.FIELD)) {
-            fieldSpec.setField(this.createField((SOQLCommonTree) child));
-        }
+        this.createField(child,fieldSpec);
     }
 
     private void processSecondNode(FieldSpec fieldSpec) {
@@ -41,8 +39,12 @@ public class FieldSpecNode extends SOQLCommonTree {
         }
     }
 
-    private Field createField(SOQLCommonTree node) {
-        return node.createSOQLData();
+    private void createField(CommonTree node, FieldSpec fieldSpec) {
+        if (!SOQLCommonTreeUtils.matchesType(node,SOQLParser.FIELD)) { return; }
+
+        SOQLCommonTree soqlNode = (SOQLCommonTree) node;
+
+        fieldSpec.setField((Field) soqlNode.createSOQLData());
     }
 
 }

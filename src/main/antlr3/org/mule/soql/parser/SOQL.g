@@ -19,9 +19,9 @@ tokens {
     OBJECT_PREFIX;
     TYPEOF_WHEN_THEN_CLAUSES;
     FUNCTION_PARAMETERS;
-    FIELD_CONDITION;
-    SET_CONDITION;
-    LIKE_CONDITION;
+    FIELD_BASED_CONDITION;
+    SET_BASED_CONDITION;
+    LIKE_BASED_CONDITION;
     PARENTHESIZED_CONDITION;
     SET_VALUES;
     ORDER_BY_SPEC;
@@ -545,19 +545,19 @@ typeof_spec:
 	END! ;
 
 typeof_when_then_clause_list:
-    typeof_when_then_clause_list_ -> ^(TYPEOF_WHEN_THEN_CLAUSES<TypeOfWhenThenClausesNode> typeof_when_then_clause_list_) ;
+    typeof_when_then_clause_list_ -> ^(TYPEOF_WHEN_THEN_CLAUSES typeof_when_then_clause_list_) ;
 
 typeof_when_then_clause_list_:
     ( typeof_when_then_clause )+ ;
 
 typeof_when_then_clause:
-    WHEN<TypeOfWhenClauseNode>^ object_name typeof_then_clause ;
+    WHEN^ object_name typeof_then_clause ;
 
 typeof_then_clause:
-    THEN<TypeOfThenClauseNode>^ field_list ;
+    THEN^ field_list ;
 
 typeof_else_clause:
-    ELSE<TypeOfElseClauseNode>^ field_list ;
+    ELSE^ field_list ;
 
 field_list:
     field ( COMMA! field )* ;
@@ -576,7 +576,7 @@ object_prefix_:
 /*************************************** CONDITION **************************************/
 
 field_operator : EQ_SYM | NOT_EQ | LET | GET | GTH | LTH ;
-set_operator   : IN | NOT IN | INCLUDES | EXCLUDES;
+set_operator   : IN | NOT IN! | INCLUDES | EXCLUDES;
 
 condition:
 	condition1 ( ( OR<OrNode>^ | AND<AndNode>^ ) condition1 )* ;
@@ -591,25 +591,25 @@ parenthesized_condition_:
 	LPAREN! condition RPAREN! ;
 
 simple_condition:
-	field_condition | set_condition | like_condition ;
+	field_based_condition | set_based_condition | like_based_condition ;
 
-field_condition:
-    field_condition_ -> ^(FIELD_CONDITION<FieldConditionNode> field_condition_) ;
+field_based_condition:
+    field_based_condition_ -> ^(FIELD_BASED_CONDITION<FieldBasedConditionNode> field_based_condition_) ;
 
-field_condition_:
+field_based_condition_:
 	condition_field field_operator literal ;
 
-set_condition:
-    set_condition_ -> ^(SET_CONDITION<SetConditionNode> set_condition_) ;
+set_based_condition:
+    set_based_condition_ -> ^(SET_BASED_CONDITION<SetBasedConditionNode> set_based_condition_) ;
 
-set_condition_:
+set_based_condition_:
 	condition_field set_operator ( soql_subquery | set_values ) ;
 
-like_condition:
-    like_condition_ -> ^(LIKE_CONDITION<LikeConditionNode> like_condition_) ;
+like_based_condition:
+    like_based_condition_ -> ^(LIKE_BASED_CONDITION<LikeBasedConditionNode> like_based_condition_) ;
 
-like_condition_:
-	condition_field LIKE ( STRING_VALUE | LIKE_STRING_VALUE );
+like_based_condition_:
+	condition_field LIKE! ( STRING_VALUE | LIKE_STRING_VALUE );
 
 condition_field:
 	field | function_call ;
@@ -632,7 +632,7 @@ with_plain_clause:
     with_plain_clause_ -> ^(WITH_PLAIN_CLAUSE<WithPlainClauseNode> with_plain_clause_) ;
 
 with_plain_clause_:
-	field_condition ;
+	field_based_condition ;
 	
 with_data_category_clause:
 	DATA<WithDataCategoryClauseNode>^ CATEGORY! data_category_spec_list ;
