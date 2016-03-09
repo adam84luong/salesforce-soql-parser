@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by damianpelaez on 3/6/16.
  */
 public class TypeOf extends SOQLData implements SelectRef {
-    private String objectName;
+    private Field field;
     private LinkedHashMap<String,List<Field>> whenThenFields = new LinkedHashMap<String,List<Field>>();
     private List<Field> elseFields = new ArrayList<Field>();
 
@@ -20,7 +20,11 @@ public class TypeOf extends SOQLData implements SelectRef {
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("TYPEOF").append(" ").append(objectName).append(" ");
+        sb.append("TYPEOF").append(" ");
+
+        if(field != null) {
+            sb.append(field.toSOQLText()).append(" ");
+        }
 
         if(whenThenFields != null) {
             for(Map.Entry<String, List<Field>> whenThenClause : whenThenFields.entrySet()) {
@@ -83,12 +87,12 @@ public class TypeOf extends SOQLData implements SelectRef {
         elseFields.add(field);
     }
 
-    public String getObjectName() {
-        return objectName;
+    public Field getField() {
+        return field;
     }
 
-    public void setObjectName(String objectName) {
-        this.objectName = objectName;
+    public void setField(Field field) {
+        this.field = field;
     }
 
     public LinkedHashMap<String, List<Field>> getWhenThenFields() {

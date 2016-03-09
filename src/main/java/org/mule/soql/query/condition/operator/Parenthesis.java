@@ -1,29 +1,32 @@
-package org.mule.soql.query.condition;
+package org.mule.soql.query.condition.operator;
 
 import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.condition.Condition;
 
 /**
  * Created by damianpelaez on 3/8/16.
  */
-public class NotOperator extends SOQLData implements Condition {
+public class Parenthesis extends SOQLData implements Condition {
     private Condition condition;
 
-    public NotOperator() {
+    public Parenthesis() {
     }
 
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("NOT");
+        sb.append("(");
 
         if(condition != null) {
-            sb.append(" ").append(condition.toSOQLText());
+            sb.append(condition.toSOQLText());
         }
+
+        sb.append(")");
 
         return sb.toString();
     }
 
-    public NotOperator(Condition condition) {
+    public Parenthesis(Condition condition) {
         this.condition = condition;
     }
 

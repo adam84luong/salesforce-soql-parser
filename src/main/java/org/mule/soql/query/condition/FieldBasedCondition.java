@@ -2,6 +2,7 @@ package org.mule.soql.query.condition;
 
 import org.mule.soql.query.Literal;
 import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.condition.operator.FieldOperator;
 
 /**
  * Created by damianpelaez on 3/6/16.

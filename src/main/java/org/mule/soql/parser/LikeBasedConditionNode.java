@@ -3,7 +3,8 @@ package org.mule.soql.parser;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
-import org.mule.soql.query.condition.*;
+import org.mule.soql.query.condition.ConditionField;
+import org.mule.soql.query.condition.LikeBasedCondition;
 
 /**
  * Created by damianpelaez on 2/26/16.

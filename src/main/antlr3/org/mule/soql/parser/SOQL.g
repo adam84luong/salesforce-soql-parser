@@ -22,7 +22,7 @@ tokens {
     FIELD_BASED_CONDITION;
     SET_BASED_CONDITION;
     LIKE_BASED_CONDITION;
-    PARENTHESIZED_CONDITION;
+    PARENTHESIS;
     SET_VALUES;
     ORDER_BY_SPEC;
     WITH_PLAIN_CLAUSE;
@@ -453,13 +453,13 @@ using_clause:
 	USING^ SCOPE! filter_scope_name ;
 
 where_clause:
-	WHERE<WhereClauseNode>^ condition ;
+	WHERE<ConditionClauseNode>^ condition ;
 
 groupby_clause:
 	GROUP<GroupByClauseNode>^ BY! ( group_by_rollup_clause | group_by_cube_clause | group_by_plain_clause ) ;
 
 having_clause:
-	HAVING<HavingClauseNode>^ condition ;
+	HAVING<ConditionClauseNode>^ condition ;
 
 orderby_clause:
 	ORDER<OrderByClauseNode>^ BY! order_by_list ;
@@ -539,7 +539,7 @@ function_parameter:
 /***************************************** TYPEOF ***************************************/
 
 typeof_spec:
-	TYPEOF<TypeOfNode>^ object_name
+	TYPEOF<TypeOfNode>^ field
 		typeof_when_then_clause_list
 		( typeof_else_clause )?
 	END! ;
@@ -582,12 +582,12 @@ condition:
 	condition1 ( ( OR<LogicalOperatorNode>^ | AND<LogicalOperatorNode>^ ) condition1 )* ;
 
 condition1:
-	( NOT<NotOperatorNode>^ )? ( simple_condition | parenthesized_condition ) ;
+	( NOT<NotOperatorNode>^ )? ( simple_condition | parenthesis ) ;
 
-parenthesized_condition:
-    parenthesized_condition_ -> ^(PARENTHESIZED_CONDITION<ParenthesizedConditionNode> parenthesized_condition_) ;
+parenthesis:
+    parenthesis_ -> ^(PARENTHESIS<ParenthesisNode> parenthesis_) ;
 
-parenthesized_condition_:
+parenthesis_:
 	LPAREN! condition RPAREN! ;
 
 simple_condition:

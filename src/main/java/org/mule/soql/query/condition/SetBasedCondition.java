@@ -1,6 +1,7 @@
 package org.mule.soql.query.condition;
 
 import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.condition.operator.SetOperator;
 
 /**
  * Created by damianpelaez on 3/6/16.
@@ -8,15 +9,15 @@ import org.mule.soql.query.SOQLData;
 public class SetBasedCondition extends SOQLData implements Condition {
     private ConditionField conditionField;
     private SetOperator operator;
-    private ConditionSet conditionSet;
+    private ConditionSet set;
 
     public SetBasedCondition() {
     }
 
-    public SetBasedCondition(ConditionField conditionField, SetOperator operator, ConditionSet conditionSet) {
+    public SetBasedCondition(ConditionField conditionField, SetOperator operator, ConditionSet set) {
         this.conditionField = conditionField;
         this.operator = operator;
-        this.conditionSet = conditionSet;
+        this.set = set;
     }
 
     @Override
@@ -29,8 +30,8 @@ public class SetBasedCondition extends SOQLData implements Condition {
 
         sb.append(" ").append(operator).append(" ");
 
-        if(conditionSet != null) {
-            sb.append(conditionSet.toSOQLText());
+        if(set != null) {
+            sb.append(set.toSOQLText());
         }
 
         return sb.toString();
@@ -52,12 +53,12 @@ public class SetBasedCondition extends SOQLData implements Condition {
         this.operator = operator;
     }
 
-    public ConditionSet getConditionSet() {
-        return conditionSet;
+    public ConditionSet getSet() {
+        return set;
     }
 
-    public void setConditionSet(ConditionSet conditionSet) {
-        this.conditionSet = conditionSet;
+    public void setSet(ConditionSet set) {
+        this.set = set;
     }
 
 }

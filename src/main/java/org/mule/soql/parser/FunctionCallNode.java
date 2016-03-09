@@ -5,7 +5,6 @@ import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.FunctionCall;
 import org.mule.soql.query.FunctionParameter;
-import org.mule.soql.query.SOQLData;
 
 import java.util.List;
 

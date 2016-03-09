@@ -1,6 +1,12 @@
 package org.mule.soql.parser;
 
 import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.tree.CommonTree;
+import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
+import org.mule.soql.query.order.OrderByDirection;
+import org.mule.soql.query.order.OrderByField;
+import org.mule.soql.query.order.OrderByNulls;
+import org.mule.soql.query.order.OrderBySpec;
 
 /**
  * Created by damianpelaez on 2/23/16.
@@ -9,6 +15,71 @@ public class OrderBySpecNode extends SOQLCommonTree {
 
     public OrderBySpecNode(int tokenType) {
         super(new CommonToken(tokenType, "ORDER_BY_SPEC"));
+    }
+
+    @Override
+    public OrderBySpec createSOQLData() {
+        OrderBySpec orderBySpec = new OrderBySpec();
+
+        this.processFirstNode(orderBySpec);
+        this.processSecondNode(orderBySpec);
+        this.processThirdNode(orderBySpec);
+
+        return orderBySpec;
+    }
+
+    private void processFirstNode(OrderBySpec orderBySpec) {
+        CommonTree child = (CommonTree) this.getChild(0);
+
+        if (child == null) { return; }
+
+        this.createOrderByField(child, orderBySpec);
+    }
+
+    private void processSecondNode(OrderBySpec orderBySpec) {
+        CommonTree child = (CommonTree) this.getChild(1);
+
+        if (child == null) { return; }
+
+        if (SOQLCommonTreeUtils.matchesAnyType(child, SOQLParser.ASC, SOQLParser.DESC)) {
+            this.createOrderByDirection(child, orderBySpec);
+        } else if (SOQLCommonTreeUtils.matchesAnyType(child, SOQLParser.NULLS)) {
+            this.createOrderByNulls(child, orderBySpec);
+        }
+    }
+
+    private void processThirdNode(OrderBySpec orderBySpec) {
+        CommonTree child = (CommonTree) this.getChild(2);
+
+        if (child == null) { return; }
+
+        this.createOrderByNulls(child, orderBySpec);
+    }
+
+    private void createOrderByField(CommonTree node, OrderBySpec orderBySpec) {
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL)) { return; }
+
+        SOQLCommonTree soqlNode = (SOQLCommonTree) node;
+
+        orderBySpec.setOrderByField((OrderByField) soqlNode.createSOQLData());
+    }
+
+    private void createOrderByDirection(CommonTree node, OrderBySpec orderBySpec) {
+        OrderByDirection orderByDirection = OrderByDirection.get(node.getText());
+
+        if (orderByDirection == null) { return; }
+
+        orderBySpec.setDirection(orderByDirection);
+    }
+
+    private void createOrderByNulls(CommonTree node, OrderBySpec orderBySpec) {
+        CommonTree child = (CommonTree) node.getChild(0);
+
+        OrderByNulls orderByNulls = OrderByNulls.get(child.getText());
+
+        if (orderByNulls == null) { return; }
+
+        orderBySpec.setNulls(orderByNulls);
     }
 
 }

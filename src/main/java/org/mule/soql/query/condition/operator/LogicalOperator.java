@@ -1,13 +1,14 @@
-package org.mule.soql.query.condition;
+package org.mule.soql.query.condition.operator;
 
 import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.condition.Condition;
 
 /**
  * Created by damianpelaez on 3/8/16.
  */
 public abstract class LogicalOperator extends SOQLData implements Condition {
-    private Condition leftCondition;
-    private Condition rightCondition;
+    protected Condition leftCondition;
+    protected Condition rightCondition;
 
     public LogicalOperator() {
     }
@@ -24,7 +25,7 @@ public abstract class LogicalOperator extends SOQLData implements Condition {
             sb.append(leftCondition.toSOQLText());
         }
         
-        sb.append(" ").append(this.getLogicalOperatorName()).append(" ");
+        sb.append(" ").append(this.getOperatorName()).append(" ");
 
         if(rightCondition != null) {
             sb.append(rightCondition.toSOQLText());
@@ -33,7 +34,7 @@ public abstract class LogicalOperator extends SOQLData implements Condition {
         return sb.toString();
     }
 
-    protected abstract String getLogicalOperatorName();
+    protected abstract String getOperatorName();
 
     public Condition getRightCondition() {
         return rightCondition;

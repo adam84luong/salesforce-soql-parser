@@ -1,6 +1,7 @@
 package org.mule.soql.query;
 
 import org.mule.soql.query.condition.ConditionField;
+import org.mule.soql.query.order.OrderByField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class FunctionCall extends SOQLData implements FunctionParameter,ConditionField {
+public class FunctionCall extends SOQLData implements FunctionParameter,ConditionField,OrderByField {
     private String functionName;
     private List<FunctionParameter> functionParameters = new ArrayList<FunctionParameter>();
 

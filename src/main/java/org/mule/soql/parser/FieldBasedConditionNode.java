@@ -6,7 +6,7 @@ import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.Literal;
 import org.mule.soql.query.condition.ConditionField;
 import org.mule.soql.query.condition.FieldBasedCondition;
-import org.mule.soql.query.condition.FieldOperator;
+import org.mule.soql.query.condition.operator.FieldOperator;
 
 /**
  * Created by damianpelaez on 2/26/16.
@@ -55,9 +55,11 @@ public class FieldBasedConditionNode extends SOQLCommonTree {
     }
 
     private void createFieldOperator(CommonTree node, FieldBasedCondition fieldBasedCondition) {
-        if (!SOQLCommonTreeUtils.isFieldOperator(node)) { return; }
+        FieldOperator fieldOperator = FieldOperator.get(node.getText());
 
-        fieldBasedCondition.setOperator(FieldOperator.getFieldOperator(node.getText()));
+        if(fieldOperator == null) { return; }
+
+        fieldBasedCondition.setOperator(fieldOperator);
     }
 
     private void createLiteral(CommonTree node, FieldBasedCondition fieldBasedCondition) {

@@ -3,7 +3,10 @@ package org.mule.soql.parser;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
-import org.mule.soql.query.condition.*;
+import org.mule.soql.query.condition.operator.AndOperator;
+import org.mule.soql.query.condition.Condition;
+import org.mule.soql.query.condition.operator.LogicalOperator;
+import org.mule.soql.query.condition.operator.OrOperator;
 
 /**
  * Created by damianpelaez on 3/4/16.

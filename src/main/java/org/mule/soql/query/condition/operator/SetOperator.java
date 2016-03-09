@@ -1,4 +1,6 @@
-package org.mule.soql.query.condition;
+package org.mule.soql.query.condition.operator;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created by damianpelaez on 3/7/16.
@@ -16,9 +18,9 @@ public enum SetOperator {
         return value;
     }
 
-    public static SetOperator getSetOperator(String value){
+    public static SetOperator get(String value){
         for(SetOperator e : SetOperator.values()){
-            if(e.getValue().equals(value)) return e;
+            if(StringUtils.equalsIgnoreCase(e.getValue(),value)) return e;
         }
         return null;
     }

@@ -6,7 +6,7 @@ import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.condition.ConditionField;
 import org.mule.soql.query.condition.ConditionSet;
 import org.mule.soql.query.condition.SetBasedCondition;
-import org.mule.soql.query.condition.SetOperator;
+import org.mule.soql.query.condition.operator.SetOperator;
 
 /**
  * Created by damianpelaez on 2/26/16.
@@ -55,9 +55,11 @@ public class SetBasedConditionNode extends SOQLCommonTree {
     }
 
     private void createSetOperator(CommonTree node, SetBasedCondition setBasedCondition) {
-        if (!SOQLCommonTreeUtils.isSetOperator(node)) { return; }
+        SetOperator setOperator = SetOperator.get(node.getText());
 
-        setBasedCondition.setOperator(SetOperator.getSetOperator(node.getText()));
+        if(setOperator == null) { return; }
+
+        setBasedCondition.setOperator(setOperator);
     }
 
     private void createConditionSet(CommonTree node, SetBasedCondition setBasedCondition) {
@@ -65,7 +67,7 @@ public class SetBasedConditionNode extends SOQLCommonTree {
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
 
-        setBasedCondition.setConditionSet((ConditionSet) soqlNode.createSOQLData());
+        setBasedCondition.setSet((ConditionSet) soqlNode.createSOQLData());
     }
 
 }

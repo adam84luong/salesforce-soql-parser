@@ -5,7 +5,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.condition.Condition;
-import org.mule.soql.query.condition.NotOperator;
+import org.mule.soql.query.condition.operator.NotOperator;
 
 /**
  * Created by damianpelaez on 3/4/16.
