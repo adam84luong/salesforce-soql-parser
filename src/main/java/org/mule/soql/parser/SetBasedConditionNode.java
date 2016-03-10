@@ -31,22 +31,22 @@ public class SetBasedConditionNode extends SOQLCommonTree {
     private void processFirstNode(SetBasedCondition setBasedCondition) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        this.createConditionField(child, setBasedCondition);
+        this.fillConditionField(child, setBasedCondition);
     }
 
     private void processSecondNode(SetBasedCondition setBasedCondition) {
         CommonTree child = (CommonTree) this.getChild(1);
 
-        this.createSetOperator(child, setBasedCondition);
+        this.fillSetOperator(child, setBasedCondition);
     }
 
     private void processThirdNode(SetBasedCondition setBasedCondition) {
         CommonTree child = (CommonTree) this.getChild(2);
 
-        this.createConditionSet(child, setBasedCondition);
+        this.fillConditionSet(child, setBasedCondition);
     }
 
-    private void createConditionField(CommonTree node, SetBasedCondition setBasedCondition) {
+    private void fillConditionField(CommonTree node, SetBasedCondition setBasedCondition) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
@@ -54,15 +54,17 @@ public class SetBasedConditionNode extends SOQLCommonTree {
         setBasedCondition.setConditionField((ConditionField) soqlNode.createSOQLData());
     }
 
-    private void createSetOperator(CommonTree node, SetBasedCondition setBasedCondition) {
-        SetOperator setOperator = SetOperator.get(node.getText());
+    private void fillSetOperator(CommonTree node, SetBasedCondition setBasedCondition) {
+        String setOperatorText = SOQLCommonTreeUtils.matchesAnyType(node,SOQLParser.NOT) ? "NOT IN" : node.getText();
+
+        SetOperator setOperator = SetOperator.get(setOperatorText);
 
         if(setOperator == null) { return; }
 
         setBasedCondition.setOperator(setOperator);
     }
 
-    private void createConditionSet(CommonTree node, SetBasedCondition setBasedCondition) {
+    private void fillConditionSet(CommonTree node, SetBasedCondition setBasedCondition) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.SOQL_QUERY, SOQLParser.SET_VALUES)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;

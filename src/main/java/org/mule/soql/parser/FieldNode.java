@@ -32,7 +32,7 @@ public class FieldNode extends SOQLCommonTree {
         if (child == null) { return; }
 
         if (SOQLCommonTreeUtils.matchesAnyType(child,SOQLParser.OBJECT_PREFIX)) {
-            this.createObjectNames(child,field);
+            this.fillObjectNames(child,field);
         } else {
             field.setFieldName(child.getText());
         }
@@ -48,7 +48,7 @@ public class FieldNode extends SOQLCommonTree {
         }
     }
 
-    private void createObjectNames(CommonTree node, Field field) {
+    private void fillObjectNames(CommonTree node, Field field) {
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
 
         if (children == null) { return; }

@@ -27,10 +27,10 @@ public class ParenthesisNode extends SOQLCommonTree {
     private void processFirstNode(Parenthesis parenthesis) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        this.createCondition(child, parenthesis);
+        this.fillCondition(child, parenthesis);
     }
 
-    private void createCondition(CommonTree node, Parenthesis parenthesis) {
+    private void fillCondition(CommonTree node, Parenthesis parenthesis) {
         if (!SOQLCommonTreeUtils.isCondition(node)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;

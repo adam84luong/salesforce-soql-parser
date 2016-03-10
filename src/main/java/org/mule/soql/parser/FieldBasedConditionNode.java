@@ -31,22 +31,22 @@ public class FieldBasedConditionNode extends SOQLCommonTree {
     private void processFirstNode(FieldBasedCondition fieldBasedCondition) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        this.createConditionField(child, fieldBasedCondition);
+        this.fillConditionField(child, fieldBasedCondition);
     }
 
     private void processSecondNode(FieldBasedCondition fieldBasedCondition) {
         CommonTree child = (CommonTree) this.getChild(1);
 
-        this.createFieldOperator(child, fieldBasedCondition);
+        this.fillFieldOperator(child, fieldBasedCondition);
     }
 
     private void processThirdNode(FieldBasedCondition fieldBasedCondition) {
         CommonTree child = (CommonTree) this.getChild(2);
 
-        this.createLiteral(child, fieldBasedCondition);
+        this.fillLiteral(child, fieldBasedCondition);
     }
 
-    private void createConditionField(CommonTree node, FieldBasedCondition fieldBasedCondition) {
+    private void fillConditionField(CommonTree node, FieldBasedCondition fieldBasedCondition) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
@@ -54,7 +54,7 @@ public class FieldBasedConditionNode extends SOQLCommonTree {
         fieldBasedCondition.setConditionField((ConditionField) soqlNode.createSOQLData());
     }
 
-    private void createFieldOperator(CommonTree node, FieldBasedCondition fieldBasedCondition) {
+    private void fillFieldOperator(CommonTree node, FieldBasedCondition fieldBasedCondition) {
         FieldOperator fieldOperator = FieldOperator.get(node.getText());
 
         if(fieldOperator == null) { return; }
@@ -62,7 +62,7 @@ public class FieldBasedConditionNode extends SOQLCommonTree {
         fieldBasedCondition.setOperator(fieldOperator);
     }
 
-    private void createLiteral(CommonTree node, FieldBasedCondition fieldBasedCondition) {
+    private void fillLiteral(CommonTree node, FieldBasedCondition fieldBasedCondition) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.LITERAL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;

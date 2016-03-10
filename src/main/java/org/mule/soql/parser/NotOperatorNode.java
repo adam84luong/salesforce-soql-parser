@@ -28,10 +28,10 @@ public class NotOperatorNode extends SOQLCommonTree {
     private void processFirstNode(NotOperator notOperator) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        this.createCondition(child, notOperator);
+        this.fillCondition(child, notOperator);
     }
 
-    private void createCondition(CommonTree node, NotOperator notOperator) {
+    private void fillCondition(CommonTree node, NotOperator notOperator) {
         if (!SOQLCommonTreeUtils.isCondition(node)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;

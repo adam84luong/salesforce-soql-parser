@@ -3,9 +3,9 @@ package org.mule.soql.parser;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
-import org.mule.soql.query.ConditionClause;
-import org.mule.soql.query.HavingClause;
-import org.mule.soql.query.WhereClause;
+import org.mule.soql.query.clause.ConditionClause;
+import org.mule.soql.query.clause.HavingClause;
+import org.mule.soql.query.clause.WhereClause;
 import org.mule.soql.query.condition.Condition;
 
 /**
@@ -19,19 +19,23 @@ public class ConditionClauseNode extends SOQLCommonTree {
 
     @Override
     public ConditionClause createSOQLData() {
+        ConditionClause conditionClause = null;
+
         if(SOQLCommonTreeUtils.matchesAnyType(this, SOQLParser.WHERE)) {
-            return this.createConditionClause(new WhereClause());
+            conditionClause = new WhereClause();
         } else if (SOQLCommonTreeUtils.matchesAnyType(this, SOQLParser.HAVING)) {
-            return this.createConditionClause(new HavingClause());
+            conditionClause = new HavingClause();
         }
-        return null;
-    }
 
-    private ConditionClause createConditionClause(ConditionClause conditionClause) {
-
-        this.processFirstNode(conditionClause);
+        this.fillConditionClause(conditionClause);
 
         return conditionClause;
+    }
+
+    private void fillConditionClause(ConditionClause conditionClause) {
+        if(conditionClause == null) { return; }
+
+        this.processFirstNode(conditionClause);
     }
 
     private void processFirstNode(ConditionClause conditionClause) {
@@ -39,10 +43,10 @@ public class ConditionClauseNode extends SOQLCommonTree {
 
         if(child == null) { return; }
 
-        this.createCondition(child, conditionClause);
+        this.fillCondition(child, conditionClause);
     }
 
-    private void createCondition(CommonTree node, ConditionClause conditionClause) {
+    private void fillCondition(CommonTree node, ConditionClause conditionClause) {
         if (!SOQLCommonTreeUtils.isCondition(node)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;

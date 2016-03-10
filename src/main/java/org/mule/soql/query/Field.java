@@ -1,6 +1,7 @@
 package org.mule.soql.query;
 
 import org.mule.soql.query.condition.ConditionField;
+import org.mule.soql.query.group.GroupByField;
 import org.mule.soql.query.order.OrderByField;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class Field extends SOQLData implements FunctionParameter,ConditionField,OrderByField {
+public class Field extends SOQLData implements FunctionParameter, ConditionField, OrderByField, GroupByField {
     private List<String> objectNames = new ArrayList<String>();
     private String fieldName;
 

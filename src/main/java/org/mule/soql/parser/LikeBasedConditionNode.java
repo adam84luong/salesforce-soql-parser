@@ -28,16 +28,16 @@ public class LikeBasedConditionNode extends SOQLCommonTree {
     private void processFirstNode(LikeBasedCondition likeBasedCondition) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        this.createConditionField(child, likeBasedCondition);
+        this.fillConditionField(child, likeBasedCondition);
     }
 
     private void processSecondNode(LikeBasedCondition likeBasedCondition) {
         CommonTree child = (CommonTree) this.getChild(1);
 
-        this.createLikeString(child, likeBasedCondition);
+        this.fillLikeString(child, likeBasedCondition);
     }
 
-    private void createConditionField(CommonTree node, LikeBasedCondition likeBasedCondition) {
+    private void fillConditionField(CommonTree node, LikeBasedCondition likeBasedCondition) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
@@ -45,7 +45,7 @@ public class LikeBasedConditionNode extends SOQLCommonTree {
         likeBasedCondition.setConditionField((ConditionField) soqlNode.createSOQLData());
     }
 
-    private void createLikeString(CommonTree node, LikeBasedCondition likeBasedCondition) {
+    private void fillLikeString(CommonTree node, LikeBasedCondition likeBasedCondition) {
         if (node == null) { return; }
 
         likeBasedCondition.setLikeString(node.getText());

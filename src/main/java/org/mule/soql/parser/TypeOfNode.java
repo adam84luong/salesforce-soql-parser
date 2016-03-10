@@ -4,7 +4,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.Field;
-import org.mule.soql.query.TypeOf;
+import org.mule.soql.query.select.TypeOf;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class TypeOfNode extends SOQLCommonTree {
 
         if (child == null) { return; }
 
-        this.createTypeOfField(child, typeOf);
+        this.fillTypeOfField(child, typeOf);
     }
 
     private void processSecondNode(TypeOf typeOf) {
@@ -41,7 +41,7 @@ public class TypeOfNode extends SOQLCommonTree {
 
         if (child == null) { return; }
 
-        this.createWhenThenClauses(child, typeOf);
+        this.fillWhenThenClauses(child, typeOf);
     }
 
     private void processThirdNode(TypeOf typeOf) {
@@ -49,10 +49,10 @@ public class TypeOfNode extends SOQLCommonTree {
 
         if (child == null) { return; }
 
-        this.createElseClause(child, typeOf);
+        this.fillElseClause(child, typeOf);
     }
 
-    private void createTypeOfField(CommonTree node, TypeOf typeOf) {
+    private void fillTypeOfField(CommonTree node, TypeOf typeOf) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
@@ -60,7 +60,7 @@ public class TypeOfNode extends SOQLCommonTree {
         typeOf.setField((Field) soqlNode.createSOQLData());
     }
 
-    private void createWhenThenClauses(CommonTree node, TypeOf typeOf) {
+    private void fillWhenThenClauses(CommonTree node, TypeOf typeOf) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.TYPEOF_WHEN_THEN_CLAUSES)) { return; }
 
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
@@ -68,18 +68,18 @@ public class TypeOfNode extends SOQLCommonTree {
         if(children == null) { return; }
 
         for(CommonTree child : children) {
-            this.createWhenThenClause(child, typeOf);
+            this.fillWhenThenClause(child, typeOf);
         }
     }
 
-    private void createWhenThenClause(CommonTree node, TypeOf typeOf) {
+    private void fillWhenThenClause(CommonTree node, TypeOf typeOf) {
         if(!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.WHEN)) { return; }
 
-        String objectName = this.createWhenThenClauseObjectName(node);
-        this.createWhenThenClauseFields(objectName, node, typeOf);
+        String objectName = this.fillWhenThenClauseObjectName(node);
+        this.fillWhenThenClauseFields(objectName, node, typeOf);
     }
 
-    private String createWhenThenClauseObjectName(CommonTree node) {
+    private String fillWhenThenClauseObjectName(CommonTree node) {
         CommonTree child = (CommonTree) node.getChild(0);
 
         if(child == null) { return ""; }
@@ -87,7 +87,7 @@ public class TypeOfNode extends SOQLCommonTree {
         return child.getText();
     }
 
-    private void createWhenThenClauseFields(String objectName, CommonTree node, TypeOf typeOf) {
+    private void fillWhenThenClauseFields(String objectName, CommonTree node, TypeOf typeOf) {
         CommonTree child = (CommonTree) node.getChild(1);
 
         if(!SOQLCommonTreeUtils.matchesAnyType(child, SOQLParser.THEN)) { return; }
@@ -97,11 +97,11 @@ public class TypeOfNode extends SOQLCommonTree {
         if(subChildren == null) { return; }
 
         for(CommonTree subChild : subChildren) {
-            this.createWhenThenClauseField(objectName, subChild, typeOf);
+            this.fillWhenThenClauseField(objectName, subChild, typeOf);
         }
     }
 
-    private void createWhenThenClauseField(String objectName, CommonTree node, TypeOf typeOf) {
+    private void fillWhenThenClauseField(String objectName, CommonTree node, TypeOf typeOf) {
         if(!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
@@ -109,7 +109,7 @@ public class TypeOfNode extends SOQLCommonTree {
         typeOf.addWhenThenField(objectName, (Field) soqlNode.createSOQLData());
     }
 
-    private void createElseClause(CommonTree node, TypeOf typeOf) {
+    private void fillElseClause(CommonTree node, TypeOf typeOf) {
         if(!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.ELSE)) { return; }
 
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
@@ -117,11 +117,11 @@ public class TypeOfNode extends SOQLCommonTree {
         if(children == null) { return; }
 
         for(CommonTree child : children) {
-            this.createElseClauseField(child, typeOf);
+            this.fillElseClauseField(child, typeOf);
         }
     }
 
-    private void createElseClauseField(CommonTree node, TypeOf typeOf) {
+    private void fillElseClauseField(CommonTree node, TypeOf typeOf) {
         if(!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;

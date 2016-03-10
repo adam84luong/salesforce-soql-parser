@@ -40,10 +40,10 @@ public class FunctionCallNode extends SOQLCommonTree {
 
         if (child == null) { return; }
 
-        this.createFunctionParameters(child, functionCall);
+        this.fillFunctionParameters(child, functionCall);
     }
 
-    private void createFunctionParameters(CommonTree node, FunctionCall functionCall) {
+    private void fillFunctionParameters(CommonTree node, FunctionCall functionCall) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FUNCTION_PARAMETERS)) { return; }
 
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
@@ -51,11 +51,11 @@ public class FunctionCallNode extends SOQLCommonTree {
         if (children == null) { return; }
 
         for (CommonTree child : children) {
-            this.createFunctionParameter(child, functionCall);
+            this.fillFunctionParameter(child, functionCall);
         }
     }
 
-    private void createFunctionParameter(CommonTree node, FunctionCall functionCall) {
+    private void fillFunctionParameter(CommonTree node, FunctionCall functionCall) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL, SOQLParser.LITERAL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;

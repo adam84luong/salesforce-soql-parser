@@ -1,15 +1,17 @@
 package org.mule.soql.query.condition.operator;
 
-import org.mule.soql.query.SOQLData;
 import org.mule.soql.query.condition.Condition;
 
 /**
  * Created by damianpelaez on 3/8/16.
  */
-public class Parenthesis extends SOQLData implements Condition {
-    private Condition condition;
+public class Parenthesis extends LogicalUnaryOperator {
 
     public Parenthesis() {
+    }
+
+    public Parenthesis(Condition condition) {
+        this.condition = condition;
     }
 
     public String toSOQLText() {
@@ -26,16 +28,9 @@ public class Parenthesis extends SOQLData implements Condition {
         return sb.toString();
     }
 
-    public Parenthesis(Condition condition) {
-        this.condition = condition;
-    }
-
-    public Condition getCondition() {
-        return condition;
-    }
-
-    public void setCondition(Condition condition) {
-        this.condition = condition;
+    @Override
+    protected String getOperatorName() {
+        return "()";
     }
 
 }

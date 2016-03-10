@@ -33,7 +33,7 @@ public class OrderBySpecNode extends SOQLCommonTree {
 
         if (child == null) { return; }
 
-        this.createOrderByField(child, orderBySpec);
+        this.fillOrderByField(child, orderBySpec);
     }
 
     private void processSecondNode(OrderBySpec orderBySpec) {
@@ -42,9 +42,9 @@ public class OrderBySpecNode extends SOQLCommonTree {
         if (child == null) { return; }
 
         if (SOQLCommonTreeUtils.matchesAnyType(child, SOQLParser.ASC, SOQLParser.DESC)) {
-            this.createOrderByDirection(child, orderBySpec);
+            this.fillOrderByDirection(child, orderBySpec);
         } else if (SOQLCommonTreeUtils.matchesAnyType(child, SOQLParser.NULLS)) {
-            this.createOrderByNulls(child, orderBySpec);
+            this.fillOrderByNulls(child, orderBySpec);
         }
     }
 
@@ -53,10 +53,10 @@ public class OrderBySpecNode extends SOQLCommonTree {
 
         if (child == null) { return; }
 
-        this.createOrderByNulls(child, orderBySpec);
+        this.fillOrderByNulls(child, orderBySpec);
     }
 
-    private void createOrderByField(CommonTree node, OrderBySpec orderBySpec) {
+    private void fillOrderByField(CommonTree node, OrderBySpec orderBySpec) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
@@ -64,7 +64,7 @@ public class OrderBySpecNode extends SOQLCommonTree {
         orderBySpec.setOrderByField((OrderByField) soqlNode.createSOQLData());
     }
 
-    private void createOrderByDirection(CommonTree node, OrderBySpec orderBySpec) {
+    private void fillOrderByDirection(CommonTree node, OrderBySpec orderBySpec) {
         OrderByDirection orderByDirection = OrderByDirection.get(node.getText());
 
         if (orderByDirection == null) { return; }
@@ -72,7 +72,7 @@ public class OrderBySpecNode extends SOQLCommonTree {
         orderBySpec.setDirection(orderByDirection);
     }
 
-    private void createOrderByNulls(CommonTree node, OrderBySpec orderBySpec) {
+    private void fillOrderByNulls(CommonTree node, OrderBySpec orderBySpec) {
         CommonTree child = (CommonTree) node.getChild(0);
 
         OrderByNulls orderByNulls = OrderByNulls.get(child.getText());

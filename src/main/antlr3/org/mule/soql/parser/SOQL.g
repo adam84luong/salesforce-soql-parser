@@ -579,7 +579,7 @@ field_operator : EQ_SYM | NOT_EQ | LET | GET | GTH | LTH ;
 set_operator   : IN | NOT IN! | INCLUDES | EXCLUDES;
 
 condition:
-	condition1 ( ( OR<LogicalOperatorNode>^ | AND<LogicalOperatorNode>^ ) condition1 )* ;
+	condition1 ( ( OR<LogicalBinaryOperatorNode>^ | AND<LogicalBinaryOperatorNode>^ ) condition1 )* ;
 
 condition1:
 	( NOT<NotOperatorNode>^ )? ( simple_condition | parenthesis ) ;
@@ -629,13 +629,13 @@ with_clause:
 	WITH<WithClauseNode>^ ( with_plain_clause | with_data_category_clause ) ;
 
 with_plain_clause:
-    with_plain_clause_ -> ^(WITH_PLAIN_CLAUSE<WithPlainClauseNode> with_plain_clause_) ;
+    with_plain_clause_ -> ^(WITH_PLAIN_CLAUSE with_plain_clause_) ;
 
 with_plain_clause_:
 	field_based_condition ;
 	
 with_data_category_clause:
-	DATA<WithDataCategoryClauseNode>^ CATEGORY! data_category_spec_list ;
+	DATA^ CATEGORY! data_category_spec_list ;
 	
 data_category_spec_list:
 	data_category_spec ( AND! data_category_spec )* ;
@@ -644,15 +644,15 @@ data_category_spec:
     data_category_spec_ -> ^(DATA_CATEGORY_SPEC<DataCategorySpecNode> data_category_spec_) ;
 
 data_category_spec_:
-	data_category_group_name data_category_filtering_selector data_category_parameter_list ;
+	data_category_group_name data_category_selector data_category_parameter_list ;
 
 data_category_parameter_list:
-    data_category_parameter_list_ -> ^(DATA_CATEGORY_PARAMETERS<DataCategoryParametersNode> data_category_parameter_list_) ;
+    data_category_parameter_list_ -> ^(DATA_CATEGORY_PARAMETERS data_category_parameter_list_) ;
 
 data_category_parameter_list_:
     data_category_name | LPAREN! data_category_name ( COMMA! data_category_name )* RPAREN! ;
 
-data_category_filtering_selector:
+data_category_selector:
 	AT | ABOVE | ABOVE_OR_BELOW | BELOW ;
 
 /************************************ GROUP BY CLAUSE ***********************************/
@@ -694,4 +694,3 @@ order_by_nulls_clause:
 
 order_by_field:
 	field | function_call ;
-	

@@ -5,7 +5,7 @@ import org.mule.soql.query.condition.Condition;
 /**
  * Created by damianpelaez on 3/8/16.
  */
-public class OrOperator extends LogicalOperator {
+public class OrOperator extends LogicalBinaryOperator {
 
     public OrOperator() {
         super();

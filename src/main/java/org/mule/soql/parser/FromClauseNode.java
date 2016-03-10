@@ -3,7 +3,7 @@ package org.mule.soql.parser;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
-import org.mule.soql.query.FromClause;
+import org.mule.soql.query.clause.FromClause;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class FromClauseNode extends SOQLCommonTree {
         if(child == null) { return; }
 
         if (SOQLCommonTreeUtils.matchesAnyType(child,SOQLParser.OBJECT_PREFIX)) {
-            this.createObjectNames(child,fromClause);
+            this.fillObjectNames(child,fromClause);
         } else {
             fromClause.setObjectName(child.getText());
         }
@@ -59,7 +59,7 @@ public class FromClauseNode extends SOQLCommonTree {
         fromClause.setAlias(child.getText());
     }
 
-    private void createObjectNames(CommonTree node, FromClause fromClause) {
+    private void fillObjectNames(CommonTree node, FromClause fromClause) {
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
 
         if(children == null) { return; }

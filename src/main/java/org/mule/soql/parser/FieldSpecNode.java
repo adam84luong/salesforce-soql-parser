@@ -4,7 +4,7 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.Field;
-import org.mule.soql.query.FieldSpec;
+import org.mule.soql.query.select.FieldSpec;
 
 /**
  * Created by damianpelaez on 2/23/16.
@@ -30,7 +30,7 @@ public class FieldSpecNode extends SOQLCommonTree {
 
         if (child == null) { return; }
 
-        this.createField(child, fieldSpec);
+        this.fillField(child, fieldSpec);
     }
 
     private void processSecondNode(FieldSpec fieldSpec) {
@@ -41,7 +41,7 @@ public class FieldSpecNode extends SOQLCommonTree {
         fieldSpec.setAlias(child.getText());
     }
 
-    private void createField(CommonTree node, FieldSpec fieldSpec) {
+    private void fillField(CommonTree node, FieldSpec fieldSpec) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;

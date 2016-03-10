@@ -4,7 +4,7 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.FunctionCall;
-import org.mule.soql.query.FunctionCallSpec;
+import org.mule.soql.query.select.FunctionCallSpec;
 
 /**
  * Created by damianpelaez on 2/23/16.
@@ -28,7 +28,7 @@ public class FunctionCallSpecNode extends SOQLCommonTree {
     private void processFirstNode(FunctionCallSpec functionCallSpec) {
         CommonTree child = (CommonTree) this.getChild(0);
 
-        this.createFunctionCall(child,functionCallSpec);
+        this.fillFunctionCall(child,functionCallSpec);
     }
 
     private void processSecondNode(FunctionCallSpec functionCallSpec) {
@@ -39,7 +39,7 @@ public class FunctionCallSpecNode extends SOQLCommonTree {
         }
     }
 
-    private void createFunctionCall(CommonTree node, FunctionCallSpec functionCallSpec) {
+    private void fillFunctionCall(CommonTree node, FunctionCallSpec functionCallSpec) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FUNCTION_CALL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;

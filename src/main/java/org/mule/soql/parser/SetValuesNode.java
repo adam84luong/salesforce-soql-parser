@@ -32,11 +32,11 @@ public class SetValuesNode extends SOQLCommonTree {
         if(children == null) { return; }
 
         for(CommonTree child : children) {
-            this.createLiteral(child, setValues);
+            this.fillLiteral(child, setValues);
         }
     }
 
-    private void createLiteral(CommonTree node, SetValues setValues) {
+    private void fillLiteral(CommonTree node, SetValues setValues) {
         if (!SOQLCommonTreeUtils.matchesAnyType(node, null, SOQLParser.LITERAL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
