@@ -496,10 +496,10 @@ offset_clause:
 	OFFSET^ UNSIGNED_INTEGER ;
 
 for_clause:
-    FOR^ for_value ( COMMA! for_value )* ;
+    FOR^ for_value ( COMMA! for_value )? ( COMMA! for_value )? ;
 
 update_clause:
-    UPDATE^ update_value ( COMMA! update_value )* ;
+    UPDATE^ update_value ( COMMA! update_value )? ;
 
 /************************************ SELECT SUBQUERY ***********************************/
 

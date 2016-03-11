@@ -20,14 +20,7 @@ public class SetValues extends SOQLData implements ConditionSet {
 
         sb.append("(");
 
-        if(values != null) {
-            for(Literal value : values) {
-                if(!values.get(0).equals(value)) {
-                    sb.append(",");
-                }
-                sb.append(value.toSOQLText());
-            }
-        }
+        sb.append(this.createSOQLListText(values, ","));
 
         sb.append(")");
 

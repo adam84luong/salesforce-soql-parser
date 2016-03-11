@@ -1,7 +1,7 @@
 package org.mule.soql.query.clause;
 
 import org.mule.soql.query.SOQLData;
-import org.mule.soql.query.group.GroupByField;
+import org.mule.soql.query.group.GroupBySpec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by damianpelaez on 3/8/16.
  */
 public abstract class GroupByClause extends SOQLData {
-    protected List<GroupByField> groupByFields = new ArrayList<GroupByField>();
+    protected List<GroupBySpec> groupBySpecs = new ArrayList<GroupBySpec>();
 
     public GroupByClause() {
     }
@@ -19,30 +19,23 @@ public abstract class GroupByClause extends SOQLData {
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
-        if(groupByFields != null) {
-            for(GroupByField groupByField : groupByFields) {
-                if(!groupByField.equals(groupByFields.get(0))) {
-                    sb.append(",");
-                }
-                sb.append(groupByField.toSOQLText());
-            }
-        }
+        sb.append(this.createSOQLListText(groupBySpecs, ","));
 
         return sb.toString();
     }
 
-    public void addGroupField(GroupByField groupByField) {
-        if(groupByField == null) { return; }
+    public void addGroupBySpec(GroupBySpec groupBySpec) {
+        if(groupBySpec == null) { return; }
 
-        if(groupByFields == null) {
-            groupByFields = new ArrayList<GroupByField>();
+        if(groupBySpecs == null) {
+            groupBySpecs = new ArrayList<GroupBySpec>();
         }
 
-        groupByFields.add(groupByField);
+        groupBySpecs.add(groupBySpec);
     }
 
-    public List<GroupByField> getGroupByFields() {
-        return groupByFields;
+    public List<GroupBySpec> getGroupBySpecs() {
+        return groupBySpecs;
     }
 
 }

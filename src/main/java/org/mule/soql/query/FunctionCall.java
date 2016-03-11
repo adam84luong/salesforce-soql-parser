@@ -30,14 +30,7 @@ public class FunctionCall extends SOQLData implements FunctionParameter,Conditio
 
         sb.append("(");
 
-        if(functionParameters != null) {
-            for(FunctionParameter functionParameter : functionParameters) {
-                if(!functionParameter.equals(functionParameters.get(0))) {
-                    sb.append(",");
-                }
-                sb.append(functionParameter.toSOQLText());
-            }
-        }
+        sb.append(this.createSOQLListText(functionParameters, ","));
 
         sb.append(")");
 

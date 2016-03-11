@@ -19,14 +19,7 @@ public class WithDataCategoryClause extends WithClause {
 
         sb.append("WITH DATA CATEGORY").append(" ");
 
-        if(dataCategorySpecs != null) {
-            for(DataCategorySpec dataCategorySpec : dataCategorySpecs) {
-                if(!dataCategorySpecs.get(0).equals(dataCategorySpec)) {
-                    sb.append(" AND ");
-                }
-                sb.append(dataCategorySpec.toSOQLText());
-            }
-        }
+        sb.append(this.createSOQLListText(dataCategorySpecs, " AND "));
 
         return sb.toString();
     }

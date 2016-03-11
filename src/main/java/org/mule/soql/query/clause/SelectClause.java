@@ -21,14 +21,7 @@ public class SelectClause extends SOQLData {
 
         sb.append("SELECT").append(" ");
 
-        if(selectSpecs != null) {
-            for(SelectSpec selectSpec : selectSpecs) {
-                if(!selectSpecs.get(0).equals(selectSpec)) {
-                    sb.append(",");
-                }
-                sb.append(selectSpec.toSOQLText());
-            }
-        }
+        sb.append(this.createSOQLListText(selectSpecs, ","));
 
         return sb.toString();
     }

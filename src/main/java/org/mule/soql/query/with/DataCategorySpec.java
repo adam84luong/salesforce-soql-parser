@@ -34,16 +34,15 @@ public class DataCategorySpec extends SOQLData {
         }
 
         if(dataCategoryNames != null) {
-            sb.append(" ").append("(");
+            sb.append(" ");
 
-            for(String dataCategoryName : dataCategoryNames) {
-                if(!dataCategoryName.equals(dataCategoryNames.get(0))) {
-                    sb.append(",");
-                }
-                sb.append(dataCategoryName);
+            if(dataCategoryNames.size() == 1) {
+                sb.append(this.createSOQLListText(dataCategoryNames, ","));
+            } else {
+                sb.append("(");
+                sb.append(this.createSOQLListText(dataCategoryNames, ","));
+                sb.append(")");
             }
-
-            sb.append(")");
         }
 
         return sb.toString();

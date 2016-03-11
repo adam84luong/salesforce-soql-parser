@@ -7,7 +7,7 @@ import org.mule.soql.query.clause.GroupByClause;
 import org.mule.soql.query.clause.GroupByCubeClause;
 import org.mule.soql.query.clause.GroupByPlainClause;
 import org.mule.soql.query.clause.GroupByRollupClause;
-import org.mule.soql.query.group.GroupByField;
+import org.mule.soql.query.group.GroupBySpec;
 
 import java.util.List;
 
@@ -40,12 +40,12 @@ public class GroupByClauseNode extends SOQLCommonTree {
             groupByClause = new GroupByCubeClause();
         }
 
-        this.fillGroupByFields(child, groupByClause);
+        this.fillGroupBySpecs(child, groupByClause);
 
         return groupByClause;
     }
 
-    private void fillGroupByFields(CommonTree node, GroupByClause groupByPlainClause) {
+    private void fillGroupBySpecs(CommonTree node, GroupByClause groupByPlainClause) {
         if(groupByPlainClause == null) { return; }
 
         List<CommonTree> children = (List<CommonTree>) node.getChildren();
@@ -53,16 +53,16 @@ public class GroupByClauseNode extends SOQLCommonTree {
         if(children == null) { return; }
 
         for(CommonTree child : children) {
-            this.fillGroupByField(child, groupByPlainClause);
+            this.fillGroupBySpec(child, groupByPlainClause);
         }
     }
 
-    private void fillGroupByField(CommonTree node, GroupByClause groupByPlainClause) {
+    private void fillGroupBySpec(CommonTree node, GroupByClause groupByPlainClause) {
         if(!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.FIELD, SOQLParser.FUNCTION_CALL)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
 
-        groupByPlainClause.addGroupField((GroupByField) soqlNode.createSOQLData());
+        groupByPlainClause.addGroupBySpec((GroupBySpec) soqlNode.createSOQLData());
     }
 
 }

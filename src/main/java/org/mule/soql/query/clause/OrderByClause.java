@@ -19,14 +19,7 @@ public class OrderByClause extends SOQLData {
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
-        if(orderBySpecs != null) {
-            for(OrderBySpec orderBySpec : orderBySpecs) {
-                if(!orderBySpec.equals(orderBySpecs.get(0))) {
-                    sb.append(",");
-                }
-                sb.append(orderBySpec.toSOQLText());
-            }
-        }
+        sb.append(this.createSOQLListText(orderBySpecs, ","));
 
         return sb.toString();
     }

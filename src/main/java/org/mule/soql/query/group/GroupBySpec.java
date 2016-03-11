@@ -5,6 +5,6 @@ import org.mule.soql.query.ISOQLData;
 /**
  * Created by damianpelaez on 3/7/16.
  */
-public interface GroupByField extends ISOQLData {
+public interface GroupBySpec extends ISOQLData {
 
 }

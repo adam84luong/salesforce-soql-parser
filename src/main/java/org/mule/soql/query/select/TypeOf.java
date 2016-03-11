@@ -32,33 +32,18 @@ public class TypeOf extends SOQLData implements SelectSpec {
         if(whenThenFields != null) {
             for(Map.Entry<String, List<Field>> whenThenClause : whenThenFields.entrySet()) {
                 sb.append("WHEN").append(" ").append(whenThenClause.getKey()).append(" ").append("THEN").append(" ");
-                sb.append(this.toSOQLText(whenThenClause.getValue()));
+                sb.append(this.createSOQLListText(whenThenClause.getValue(), ","));
                 sb.append(" ");
             }
         }
 
         if(elseFields != null && !elseFields.isEmpty()) {
             sb.append("ELSE").append(" ");
-            sb.append(this.toSOQLText(elseFields));
+            sb.append(this.createSOQLListText(elseFields, ","));
             sb.append(" ");
         }
 
         sb.append("END");
-
-        return sb.toString();
-    }
-
-    private String toSOQLText(List<Field> fields) {
-        StringBuilder sb = new StringBuilder();
-
-        if(fields != null) {
-            for(Field field : fields) {
-                if(!fields.get(0).equals(field)) {
-                    sb.append(",");
-                }
-                sb.append(field.toSOQLText());
-            }
-        }
 
         return sb.toString();
     }
