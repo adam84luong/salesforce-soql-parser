@@ -496,10 +496,10 @@ offset_clause:
 	OFFSET^ UNSIGNED_INTEGER ;
 
 for_clause:
-    FOR^ (REFERENCE | VIEW | UPDATE) ;
+    FOR^ for_value ( COMMA! for_value )* ;
 
 update_clause:
-    UPDATE^ (TRACKING | VIEWSTAT) ;
+    UPDATE^ update_value ( COMMA! update_value )* ;
 
 /************************************ SELECT SUBQUERY ***********************************/
 
@@ -729,3 +729,11 @@ order_by_nulls_clause:
 
 order_by_field:
 	field | function_call ;
+
+/************************************** FOR CLAUSE **************************************/
+
+for_value: REFERENCE | VIEW | UPDATE ;
+
+/************************************* UPDATE CLAUSE ************************************/
+
+update_value: TRACKING | VIEWSTAT ;
