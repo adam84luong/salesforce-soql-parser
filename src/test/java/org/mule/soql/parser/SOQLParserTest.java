@@ -8,6 +8,7 @@ import org.mule.soql.SOQLParserHelper;
 
 import java.io.IOException;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -34,7 +35,12 @@ public abstract class SOQLParserTest {
 	@Test
 	public void testSOQLLine() throws IOException {
 		SOQLCommonTree tree = parserHelper.parseTextToTree(line);
+
 		assertNotNull(tree);
+
+		String soqlText = tree.createSOQLData().toSOQLText();
+
+		assertEquals(line.replaceAll("\\s","").toLowerCase(), soqlText.replaceAll("\\s","").toLowerCase());
 	}
 
 	@After

@@ -1,7 +1,7 @@
 package org.mule.soql.query.select;
 
-import org.mule.soql.query.Field;
 import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.data.Field;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

@@ -3,6 +3,7 @@ package org.mule.soql.parser.utils;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.SOQLParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +48,36 @@ public class SOQLCommonTreeUtils {
         }
 
         return sb.toString();
+    }
+
+    public static List<String> getChildrenTexts(CommonTree node) {
+        if(node == null) { return null; }
+
+        List<CommonTree> children = (List<CommonTree>) node.getChildren();
+
+        if(children == null) { return null; }
+
+        List<String> childrenTexts = new ArrayList<String>();
+
+        for(CommonTree child : children) {
+            childrenTexts.add(child.getText());
+        }
+
+        return childrenTexts;
+    }
+
+    public static Integer getTextAsInteger(CommonTree node) {
+        if(node == null || node.getText() == null) { return null; }
+
+        Integer value = null;
+
+        try{
+            value = new Integer(node.getText());
+        } catch(NumberFormatException e) {
+            //I omit the exception and return null
+        }
+
+        return value;
     }
 
 }

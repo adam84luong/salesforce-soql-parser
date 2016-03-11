@@ -3,7 +3,7 @@ package org.mule.soql.parser;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
-import org.mule.soql.query.Field;
+import org.mule.soql.query.data.Field;
 import org.mule.soql.query.select.TypeOf;
 
 import java.util.List;

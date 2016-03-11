@@ -1,4 +1,6 @@
-package org.mule.soql.query;
+package org.mule.soql.query.from;
+
+import org.mule.soql.query.SOQLData;
 
 import java.util.ArrayList;
 import java.util.List;

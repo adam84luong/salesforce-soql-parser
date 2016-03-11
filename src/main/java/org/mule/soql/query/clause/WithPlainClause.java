@@ -18,10 +18,10 @@ public class WithPlainClause extends WithClause {
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("WITH");
+        sb.append("WITH").append(" ");
 
         if(fieldBasedCondition != null) {
-            sb.append(" ").append(fieldBasedCondition.toSOQLText());
+            sb.append(fieldBasedCondition.toSOQLText());
         }
 
         return sb.toString();

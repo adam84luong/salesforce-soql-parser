@@ -12,11 +12,11 @@ public class GroupByCubeClause extends GroupByClause {
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("CUBE");
+        sb.append("GROUP BY").append(" ").append("CUBE");
 
         sb.append(" ").append("(");
 
-        sb.append(super.toSOQLText());
+        sb.append(this.groupBySpecsToSOQLText());
 
         sb.append(")");
 

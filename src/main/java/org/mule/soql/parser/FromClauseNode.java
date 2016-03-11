@@ -3,8 +3,8 @@ package org.mule.soql.parser;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
-import org.mule.soql.query.ObjectSpec;
 import org.mule.soql.query.clause.FromClause;
+import org.mule.soql.query.from.ObjectSpec;
 
 import java.util.List;
 

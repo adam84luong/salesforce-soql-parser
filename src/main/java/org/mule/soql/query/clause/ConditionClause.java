@@ -19,10 +19,10 @@ public abstract class ConditionClause extends SOQLData {
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(this.getConditionName());
+        sb.append(this.getConditionName()).append(" ");
 
         if(condition != null) {
-            sb.append(" ").append(condition.toSOQLText());
+            sb.append(condition.toSOQLText());
         }
 
         return sb.toString();

@@ -1,8 +1,8 @@
 package org.mule.soql.query.condition;
 
-import org.mule.soql.query.Literal;
 import org.mule.soql.query.SOQLData;
 import org.mule.soql.query.condition.operator.ComparisonOperator;
+import org.mule.soql.query.data.Literal;
 
 /**
  * Created by damianpelaez on 3/6/16.

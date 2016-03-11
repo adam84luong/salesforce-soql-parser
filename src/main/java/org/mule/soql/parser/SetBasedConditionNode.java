@@ -61,7 +61,7 @@ public class SetBasedConditionNode extends SOQLCommonTree {
     }
 
     private void fillConditionSet(CommonTree node, SetBasedCondition setBasedCondition) {
-        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.SOQL_QUERY, SOQLParser.SET_VALUES)) { return; }
+        if (!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.SOQL_SUBQUERY, SOQLParser.SET_VALUES)) { return; }
 
         SOQLCommonTree soqlNode = (SOQLCommonTree) node;
 

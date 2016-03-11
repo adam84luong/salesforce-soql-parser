@@ -1,7 +1,7 @@
 package org.mule.soql.query.clause;
 
-import org.mule.soql.query.ObjectSpec;
 import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.from.ObjectSpec;
 
 import java.util.ArrayList;
 import java.util.List;

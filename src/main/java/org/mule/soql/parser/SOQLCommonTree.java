@@ -19,8 +19,6 @@ public abstract class SOQLCommonTree extends CommonTree {
         super(t);
     }
 
-    public <T extends SOQLData> T createSOQLData() {
-        return null;
-    }
+    public abstract <T extends SOQLData> T createSOQLData();
 
 }

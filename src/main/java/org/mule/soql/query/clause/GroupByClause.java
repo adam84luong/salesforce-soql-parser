@@ -19,9 +19,15 @@ public abstract class GroupByClause extends SOQLData {
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(this.createSOQLListText(groupBySpecs, ","));
+        sb.append("GROUP BY").append(" ");
+
+        sb.append(this.groupBySpecsToSOQLText());
 
         return sb.toString();
+    }
+
+    protected String groupBySpecsToSOQLText() {
+        return this.createSOQLListText(groupBySpecs, ",");
     }
 
     public void addGroupBySpec(GroupBySpec groupBySpec) {

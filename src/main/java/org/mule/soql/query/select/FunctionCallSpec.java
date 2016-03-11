@@ -1,7 +1,7 @@
 package org.mule.soql.query.select;
 
-import org.mule.soql.query.FunctionCall;
 import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.data.FunctionCall;
 
 /**
  * Created by damianpelaez on 3/6/16.

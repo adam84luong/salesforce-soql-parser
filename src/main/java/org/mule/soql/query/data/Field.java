@@ -1,5 +1,6 @@
-package org.mule.soql.query;
+package org.mule.soql.query.data;
 
+import org.mule.soql.query.SOQLData;
 import org.mule.soql.query.condition.ConditionField;
 import org.mule.soql.query.group.GroupBySpec;
 import org.mule.soql.query.order.OrderByField;

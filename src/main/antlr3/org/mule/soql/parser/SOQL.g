@@ -409,7 +409,7 @@ date_formula_n_literal_name:
    	| N_FISCAL_YEARS_AGO
 ;
 
-date_formula_n_literal: date_formula_n_literal_name COLON UNSIGNED_INTEGER ;
+date_formula_n_literal: date_formula_n_literal_name COLON! UNSIGNED_INTEGER ;
 datetime_literal: DATETIME ;
 date_literal: DATE ;
 integer_literal: SIGNED_INTEGER | UNSIGNED_INTEGER ;
@@ -496,7 +496,7 @@ offset_clause:
 	OFFSET^ UNSIGNED_INTEGER ;
 
 for_clause:
-    FOR^ for_value ( COMMA! for_value )? ( COMMA! for_value )? ;
+    FOR^ for_value ;
 
 update_clause:
     UPDATE^ update_value ( COMMA! update_value )? ;
@@ -507,7 +507,7 @@ soql_subquery:
     soql_subquery_ -> ^(SOQL_SUBQUERY<SOQLSubQueryNode> soql_subquery_) ;
 
 soql_subquery_:
-    LPAREN! subquery_select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? RPAREN! ;
+    LPAREN! subquery_select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ( for_clause )? ( update_clause )? RPAREN! ;
 
 subquery_select_clause:
     SELECT<SelectClauseNode>^ subquery_select_spec ( COMMA! subquery_select_spec )* ;
