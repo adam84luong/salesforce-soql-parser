@@ -23,4 +23,21 @@ public abstract class SOQLCommonTree extends CommonTree {
         return null;
     }
 
+    public void printSOQLData() {
+        List<CommonTree> children = (List<CommonTree>) this.getChildren();
+
+        SOQLData soqlData = this.createSOQLData();
+
+        if(soqlData != null) {
+            System.out.println(this.getText() + ": " + soqlData.toSOQLText());
+        }
+
+        for(CommonTree child : children) {
+            if(child instanceof SOQLCommonTree) {
+                SOQLCommonTree node = (SOQLCommonTree) child;
+                node.printSOQLData();
+            }
+        }
+    }
+
 }

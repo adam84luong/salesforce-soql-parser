@@ -6,7 +6,7 @@ import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.Literal;
 import org.mule.soql.query.condition.ConditionField;
 import org.mule.soql.query.condition.FieldBasedCondition;
-import org.mule.soql.query.condition.operator.FieldOperator;
+import org.mule.soql.query.condition.operator.ComparisonOperator;
 
 /**
  * Created by damianpelaez on 2/26/16.
@@ -37,7 +37,7 @@ public class FieldBasedConditionNode extends SOQLCommonTree {
     private void processSecondNode(FieldBasedCondition fieldBasedCondition) {
         CommonTree child = (CommonTree) this.getChild(1);
 
-        this.fillFieldOperator(child, fieldBasedCondition);
+        this.fillComparisonOperator(child, fieldBasedCondition);
     }
 
     private void processThirdNode(FieldBasedCondition fieldBasedCondition) {
@@ -54,12 +54,10 @@ public class FieldBasedConditionNode extends SOQLCommonTree {
         fieldBasedCondition.setConditionField((ConditionField) soqlNode.createSOQLData());
     }
 
-    private void fillFieldOperator(CommonTree node, FieldBasedCondition fieldBasedCondition) {
-        FieldOperator fieldOperator = FieldOperator.get(node.getText());
+    private void fillComparisonOperator(CommonTree node, FieldBasedCondition fieldBasedCondition) {
+        String operatorName = SOQLCommonTreeUtils.getOperatorName(node);
 
-        if(fieldOperator == null) { return; }
-
-        fieldBasedCondition.setOperator(fieldOperator);
+        fieldBasedCondition.setOperator(ComparisonOperator.get(operatorName));
     }
 
     private void fillLiteral(CommonTree node, FieldBasedCondition fieldBasedCondition) {

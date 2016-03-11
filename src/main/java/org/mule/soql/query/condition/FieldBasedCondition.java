@@ -2,20 +2,20 @@ package org.mule.soql.query.condition;
 
 import org.mule.soql.query.Literal;
 import org.mule.soql.query.SOQLData;
-import org.mule.soql.query.condition.operator.FieldOperator;
+import org.mule.soql.query.condition.operator.ComparisonOperator;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
 public class FieldBasedCondition extends SOQLData implements Condition {
     private ConditionField conditionField;
-    private FieldOperator operator;
+    private ComparisonOperator operator;
     private Literal literal;
 
     public FieldBasedCondition() {
     }
 
-    public FieldBasedCondition(ConditionField conditionField, FieldOperator operator, Literal literal) {
+    public FieldBasedCondition(ConditionField conditionField, ComparisonOperator operator, Literal literal) {
         this.conditionField = conditionField;
         this.operator = operator;
         this.literal = literal;
@@ -46,11 +46,11 @@ public class FieldBasedCondition extends SOQLData implements Condition {
         this.conditionField = conditionField;
     }
 
-    public FieldOperator getOperator() {
+    public ComparisonOperator getOperator() {
         return operator;
     }
 
-    public void setOperator(FieldOperator operator) {
+    public void setOperator(ComparisonOperator operator) {
         this.operator = operator;
     }
 

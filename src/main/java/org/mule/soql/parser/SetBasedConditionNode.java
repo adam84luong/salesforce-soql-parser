@@ -6,6 +6,7 @@ import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.condition.ConditionField;
 import org.mule.soql.query.condition.ConditionSet;
 import org.mule.soql.query.condition.SetBasedCondition;
+import org.mule.soql.query.condition.operator.ComparisonOperator;
 import org.mule.soql.query.condition.operator.SetOperator;
 
 /**
@@ -55,13 +56,9 @@ public class SetBasedConditionNode extends SOQLCommonTree {
     }
 
     private void fillSetOperator(CommonTree node, SetBasedCondition setBasedCondition) {
-        String setOperatorText = SOQLCommonTreeUtils.matchesAnyType(node,SOQLParser.NOT) ? "NOT IN" : node.getText();
+        String operatorName = SOQLCommonTreeUtils.getOperatorName(node);
 
-        SetOperator setOperator = SetOperator.get(setOperatorText);
-
-        if(setOperator == null) { return; }
-
-        setBasedCondition.setOperator(setOperator);
+        setBasedCondition.setOperator(SetOperator.get(operatorName));
     }
 
     private void fillConditionSet(CommonTree node, SetBasedCondition setBasedCondition) {

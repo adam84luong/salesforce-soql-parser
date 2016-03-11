@@ -22,6 +22,7 @@ tokens {
     FIELD_BASED_CONDITION;
     SET_BASED_CONDITION;
     LIKE_BASED_CONDITION;
+    OPERATOR;
     PARENTHESIS;
     SET_VALUES;
     ORDER_BY_SPEC;
@@ -208,12 +209,17 @@ MIN                 : M_ I_ N_ ;
 MAX                 : M_ A_ X_ ;
 SUM                 : S_ U_ M_ ;
 
+/********* LOCATION FUNCTIONS *********/
+
+DISTANCE            : D_ I_ S_ T_ A_ N_ C_ E_ ;
+GEOLOCATION         : G_ E_ O_ L_ O_ C_ A_ T_ I_ O_ N_ ;
+
 /********** OTHER FUNCTIONS **********/
 
 TO_LABEL		    : T_ O_ L_ A_ B_ E_ L_ ;
 CONVERT_TIME_ZONE   : C_ O_ N_ V_ E_ R_ T_ T_ I_ M_ E_ Z_ O_ N_ E_ ;
-GROUPING            : G_ R_ O_ U_ P_ I_ N_ G_ ;
 CONVERT_CURRENCY    : C_ O_ N_ V_ E_ R_ T_ C_ U_ R_ R_ E_ N_ C_ Y_ ;
+GROUPING            : G_ R_ O_ U_ P_ I_ N_ G_ ;
 
 /********** DATE LITERALS **********/
 
@@ -245,23 +251,29 @@ NEXT_FISCAL_YEAR    : N_ E_ X_ T_ '_' F_ I_ S_ C_ A_ L_ '_' Y_ E_ A_ R_ ;
 
 NEXT_N_DAYS             : N_ E_ X_ T_ '_' N_ '_' D_ A_ Y_ S_ ;
 LAST_N_DAYS             : L_ A_ S_ T_ '_' N_ '_' D_ A_ Y_ S_ ;
+N_DAYS_AGO              : N_ '_' D_ A_ Y_ S_ '_' A_ G_ O_ ;
 NEXT_N_WEEKS            : N_ E_ X_ T_ '_' N_ '_' W_ E_ E_ K_ S_ ;
 LAST_N_WEEKS            : L_ A_ S_ T_ '_' N_ '_' W_ E_ E_ K_ S_ ;
+N_WEEKS_AGO             : N_ '_' W_ E_ E_ K_ S_ '_' A_ G_ O_ ;
 NEXT_N_MONTHS           : N_ E_ X_ T_ '_' N_ '_' M_ O_ N_ T_ H_ S_ ;
 LAST_N_MONTHS           : L_ A_ S_ T_ '_' N_ '_' M_ O_ N_ T_ H_ S_ ;
+N_MONTHS_AGO            : N_ '_' M_ O_ N_ T_ H_ S_ '_' A_ G_ O_ ;
 NEXT_N_QUARTERS         : N_ E_ X_ T_ '_' N_ '_' Q_ U_ A_ R_ T_ E_ R_ S_ ;
 LAST_N_QUARTERS         : L_ A_ S_ T_ '_' N_ '_' Q_ U_ A_ R_ T_ E_ R_ S_ ;
+N_QUARTERS_AGO          : N_ '_' Q_ U_ A_ R_ T_ E_ R_ S_ '_' A_ G_ O_ ;
 NEXT_N_YEARS            : N_ E_ X_ T_ '_' N_ '_' Y_ E_ A_ R_ S_ ;
 LAST_N_YEARS            : L_ A_ S_ T_ '_' N_ '_' Y_ E_ A_ R_ S_ ;
-NEXT_N_FISCALQUARTERS   : N_ E_ X_ T_ '_' N_ '_' F_ I_ S_ C_ A_ L_ '_' Q_ U_ A_ R_ T_ E_ R_ S_ ;
-LAST_N_FISCALQUARTERS   : L_ A_ S_ T_ '_' N_ '_' F_ I_ S_ C_ A_ L_ '_' Q_ U_ A_ R_ T_ E_ R_ S_ ;
-NEXT_N_FISCALYEARS      : N_ E_ X_ T_ '_' N_ '_' F_ I_ S_ C_ A_ L_ '_' Y_ E_ A_ R_ S_ ;
-LAST_N_FISCALYEARS      : L_ A_ S_ T_ '_' N_ '_' F_ I_ S_ C_ A_ L_ '_' Y_ E_ A_ R_ S_ ;
-N_DAYS_AGO              : N_ '_' D_ A_ Y_ S_ '_' A_ G_ O_ ;
+N_YEARS_AGO             : N_ '_' Y_ E_ A_ R_ S_ '_' A_ G_ O_ ;
+NEXT_N_FISCAL_QUARTERS  : N_ E_ X_ T_ '_' N_ '_' F_ I_ S_ C_ A_ L_ '_' Q_ U_ A_ R_ T_ E_ R_ S_ ;
+LAST_N_FISCAL_QUARTERS  : L_ A_ S_ T_ '_' N_ '_' F_ I_ S_ C_ A_ L_ '_' Q_ U_ A_ R_ T_ E_ R_ S_ ;
+N_FISCAL_QUARTERS_AGO   : N_ '_' F_ I_ S_ C_ A_ L_ '_' Q_ U_ A_ R_ T_ E_ R_ S_ '_' A_ G_ O_ ;
+NEXT_N_FISCAL_YEARS     : N_ E_ X_ T_ '_' N_ '_' F_ I_ S_ C_ A_ L_ '_' Y_ E_ A_ R_ S_ ;
+LAST_N_FISCAL_YEARS     : L_ A_ S_ T_ '_' N_ '_' F_ I_ S_ C_ A_ L_ '_' Y_ E_ A_ R_ S_ ;
+N_FISCAL_YEARS_AGO      : N_ '_' F_ I_ S_ C_ A_ L_ '_' Y_ E_ A_ R_ S_ '_' A_ G_ O_ ;
 
 /********** OPERATIONS **********/
 
-EQ_SYM	    : '=' ;
+EQ  	    : '=' ;
 NOT_EQ	    : '<>' | '!=' ;
 LET	        : '<=' ;
 GET	        : '>=' ;
@@ -335,7 +347,7 @@ filter_scope_name         : name ;
 data_category_group_name  : name ;
 data_category_name        : name ;
 
-alias_name                : ID | keywords_alias_allowed ;
+alias_name                : ID | keywords_alias_allowed | date_formula_literal | date_formula_n_literal_name | function_name ;
 alias			          : ( AS! )? alias_name ;
 
 /********** LITERALS **********/
@@ -375,19 +387,25 @@ date_formula_literal:
 date_formula_n_literal_name:
    	  NEXT_N_DAYS
    	| LAST_N_DAYS
+   	| N_DAYS_AGO
    	| NEXT_N_WEEKS
    	| LAST_N_WEEKS
+   	| N_WEEKS_AGO
    	| NEXT_N_MONTHS
    	| LAST_N_MONTHS
+   	| N_MONTHS_AGO
    	| NEXT_N_QUARTERS
    	| LAST_N_QUARTERS
+   	| N_QUARTERS_AGO
    	| NEXT_N_YEARS
    	| LAST_N_YEARS
-   	| NEXT_N_FISCALQUARTERS
-   	| LAST_N_FISCALQUARTERS
-   	| NEXT_N_FISCALYEARS
-   	| LAST_N_FISCALYEARS
-	| N_DAYS_AGO
+   	| N_YEARS_AGO
+   	| NEXT_N_FISCAL_QUARTERS
+   	| LAST_N_FISCAL_QUARTERS
+   	| N_FISCAL_QUARTERS_AGO
+   	| NEXT_N_FISCAL_YEARS
+   	| LAST_N_FISCAL_YEARS
+   	| N_FISCAL_YEARS_AGO
 ;
 
 date_formula_n_literal: date_formula_n_literal_name COLON UNSIGNED_INTEGER ;
@@ -402,7 +420,7 @@ null_literal: NULL ;
 /********** FUNCTIONS **********/
 
 function_name:
-	function_date | function_aggregate | function_other ;
+	function_date | function_aggregate | function_location | function_other ;
 
 function_date:
       CALENDAR_MONTH
@@ -429,10 +447,16 @@ function_aggregate:
     | SUM
 ;
 
+function_location:
+      DISTANCE
+    | GEOLOCATION
+;
+
 function_other:
 	  TO_LABEL
 	| CONVERT_TIME_ZONE
 	| CONVERT_CURRENCY
+	| GROUPING
 ;
 
 /************************************* SELECT QUERY *************************************/
@@ -575,8 +599,15 @@ object_prefix_:
 
 /*************************************** CONDITION **************************************/
 
-field_operator : EQ_SYM | NOT_EQ | LET | GET | GTH | LTH ;
-set_operator   : IN | NOT IN! | INCLUDES | EXCLUDES;
+comparison_operator:
+    comparison_operator_ -> ^(OPERATOR comparison_operator_) ;
+
+comparison_operator_ : EQ | NOT_EQ | LET | GET | GTH | LTH | GTH EQ | LTH EQ ;
+
+set_operator:
+    set_operator_ -> ^(OPERATOR set_operator_) ;
+
+set_operator_   : IN | NOT IN | INCLUDES | EXCLUDES;
 
 condition:
 	condition1 ( ( OR<LogicalBinaryOperatorNode>^ | AND<LogicalBinaryOperatorNode>^ ) condition1 )* ;
@@ -597,7 +628,7 @@ field_based_condition:
     field_based_condition_ -> ^(FIELD_BASED_CONDITION<FieldBasedConditionNode> field_based_condition_) ;
 
 field_based_condition_:
-	condition_field field_operator literal ;
+	condition_field comparison_operator literal ;
 
 set_based_condition:
     set_based_condition_ -> ^(SET_BASED_CONDITION<SetBasedConditionNode> set_based_condition_) ;
