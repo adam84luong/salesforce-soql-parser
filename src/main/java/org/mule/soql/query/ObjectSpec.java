@@ -1,24 +1,22 @@
 package org.mule.soql.query;
 
-import org.mule.soql.query.condition.ConditionField;
-import org.mule.soql.query.group.GroupByField;
-import org.mule.soql.query.order.OrderByField;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class Field extends SOQLData implements FunctionParameter, ConditionField, OrderByField, GroupByField {
+public class ObjectSpec extends SOQLData {
     private List<String> objectPrefixNames = new ArrayList<String>();
-    private String fieldName;
+    private String objectName;
+    private String alias;
 
-    public Field() {
+    public ObjectSpec() {
     }
 
-    public Field(String fieldName) {
-        this.fieldName = fieldName;
+    public ObjectSpec(String objectName, String alias) {
+        this.objectName = objectName;
+        this.alias = alias;
     }
 
     @Override
@@ -26,13 +24,17 @@ public class Field extends SOQLData implements FunctionParameter, ConditionField
         StringBuilder sb = new StringBuilder();
 
         if(objectPrefixNames != null) {
-            for(String objectPrefixName : objectPrefixNames) {
-                sb.append(objectPrefixName).append(".");
+            for(String objectName : objectPrefixNames) {
+                sb.append(objectName).append(".");
             }
         }
 
-        if(fieldName != null) {
-            sb.append(fieldName);
+        if(objectName != null) {
+            sb.append(objectName);
+        }
+
+        if(alias != null) {
+            sb.append(" ").append(alias);
         }
 
         return sb.toString();
@@ -48,16 +50,24 @@ public class Field extends SOQLData implements FunctionParameter, ConditionField
         objectPrefixNames.add(objectPrefixName);
     }
 
-    public String getFieldName() {
-        return fieldName;
+    public String getObjectName() {
+        return objectName;
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+    public void setObjectName(String objectName) {
+        this.objectName = objectName;
     }
 
     public List<String> getObjectPrefixNames() {
         return objectPrefixNames;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
 }

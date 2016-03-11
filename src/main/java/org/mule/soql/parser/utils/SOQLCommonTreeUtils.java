@@ -40,7 +40,7 @@ public class SOQLCommonTreeUtils {
         StringBuilder sb = new StringBuilder();
 
         for(CommonTree child : children) {
-            if(!children.get(0).equals(child)) {
+            if(child.getChildIndex() != 0) {
                 sb.append(" ");
             }
             sb.append(child.getText());

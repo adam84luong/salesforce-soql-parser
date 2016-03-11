@@ -54,7 +54,7 @@ public class FieldNode extends SOQLCommonTree {
         if (children == null) { return; }
 
         for(CommonTree child : children) {
-            field.addObjectName(child.getText());
+            field.addObjectPrefixName(child.getText());
         }
     }
 

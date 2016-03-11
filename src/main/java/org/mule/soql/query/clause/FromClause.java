@@ -1,5 +1,6 @@
 package org.mule.soql.query.clause;
 
+import org.mule.soql.query.ObjectSpec;
 import org.mule.soql.query.SOQLData;
 
 import java.util.ArrayList;
@@ -9,16 +10,14 @@ import java.util.List;
  * Created by damianpelaez on 3/6/16.
  */
 public class FromClause extends SOQLData {
-    private List<String> objectNames = new ArrayList<String>();
-    private String objectName;
-    private String alias;
+    private List<ObjectSpec> relationObjectSpecs = new ArrayList<ObjectSpec>();
+    private ObjectSpec mainObjectSpec;
 
     public FromClause() {
     }
 
-    public FromClause(String objectName, String alias) {
-        this.objectName = objectName;
-        this.alias = alias;
+    public FromClause(ObjectSpec mainObjectSpec) {
+        this.mainObjectSpec = mainObjectSpec;
     }
 
     @Override
@@ -27,51 +26,39 @@ public class FromClause extends SOQLData {
 
         sb.append("FROM").append(" ");
 
-        if(objectNames != null) {
-            for(String objectName : objectNames) {
-                sb.append(objectName).append(".");
+        if(mainObjectSpec != null) {
+            sb.append(mainObjectSpec.toSOQLText());
+        }
+
+        if(relationObjectSpecs != null) {
+            for(ObjectSpec relationObjectSpec : relationObjectSpecs) {
+                sb.append(",").append(relationObjectSpec.toSOQLText());
             }
-        }
-
-        if(objectName != null) {
-            sb.append(objectName);
-        }
-
-        if(alias != null) {
-            sb.append(" ").append(alias);
         }
 
         return sb.toString();
     }
 
-    public void addObjectName(String objectName) {
-        if(objectName == null) { return; }
+    public void addRelationObjectSpec(ObjectSpec relationObjectSpec) {
+        if(relationObjectSpec == null) { return; }
 
-        if(objectNames == null) {
-            objectNames = new ArrayList<String>();
+        if(relationObjectSpecs == null) {
+            relationObjectSpecs = new ArrayList<ObjectSpec>();
         }
 
-        objectNames.add(objectName);
+        relationObjectSpecs.add(relationObjectSpec);
     }
 
-    public String getObjectName() {
-        return objectName;
+    public ObjectSpec getMainObjectSpec() {
+        return mainObjectSpec;
     }
 
-    public void setObjectName(String objectName) {
-        this.objectName = objectName;
+    public void setMainObjectSpec(ObjectSpec mainObjectSpec) {
+        this.mainObjectSpec = mainObjectSpec;
     }
 
-    public List<String> getObjectNames() {
-        return objectNames;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
+    public List<ObjectSpec> getRelationObjectSpecs() {
+        return relationObjectSpecs;
     }
 
 }

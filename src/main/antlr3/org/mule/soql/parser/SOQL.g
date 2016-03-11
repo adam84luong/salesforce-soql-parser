@@ -16,6 +16,7 @@ tokens {
     FIELD;
     FUNCTION_CALL_SPEC;
     FUNCTION_CALL;
+    OBJECT_SPEC;
     OBJECT_PREFIX;
     TYPEOF_WHEN_THEN_CLAUSES;
     FUNCTION_PARAMETERS;
@@ -216,7 +217,7 @@ GEOLOCATION         : G_ E_ O_ L_ O_ C_ A_ T_ I_ O_ N_ ;
 
 /********** OTHER FUNCTIONS **********/
 
-TO_LABEL		    : T_ O_ L_ A_ B_ E_ L_ ;
+TOLABEL		        : T_ O_ L_ A_ B_ E_ L_ ;
 CONVERT_TIME_ZONE   : C_ O_ N_ V_ E_ R_ T_ T_ I_ M_ E_ Z_ O_ N_ E_ ;
 CONVERT_CURRENCY    : C_ O_ N_ V_ E_ R_ T_ C_ U_ R_ R_ E_ N_ C_ Y_ ;
 GROUPING            : G_ R_ O_ U_ P_ I_ N_ G_ ;
@@ -453,7 +454,7 @@ function_location:
 ;
 
 function_other:
-	  TO_LABEL
+	  TOLABEL
 	| CONVERT_TIME_ZONE
 	| CONVERT_CURRENCY
 	| GROUPING
@@ -465,13 +466,13 @@ soql_query:
     soql_query_ -> ^(SOQL_QUERY<SOQLQueryNode> soql_query_) ;
 
 soql_query_:
-	select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ( update_clause )? EOF! ;
+	select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ( for_clause )? ( update_clause )? EOF! ;
 
 select_clause:
-    SELECT<SelectClauseNode>^ select_reference ( COMMA! select_reference )* ;
+    SELECT<SelectClauseNode>^ select_spec ( COMMA! select_spec )* ;
 
 from_clause:
-    FROM<FromClauseNode>^ object_reference ( COMMA! object_reference )* ;
+    FROM<FromClauseNode>^ object_spec ( COMMA! object_spec )* ;
 
 using_clause:
 	USING^ SCOPE! filter_scope_name ;
@@ -509,17 +510,17 @@ soql_subquery_:
     LPAREN! subquery_select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? RPAREN! ;
 
 subquery_select_clause:
-    SELECT<SelectClauseNode>^ subquery_select_reference ( COMMA! subquery_select_reference )* ;
+    SELECT<SelectClauseNode>^ subquery_select_spec ( COMMA! subquery_select_spec )* ;
 
 /************************************ SELECT REFERENCES *********************************/
 
-select_reference:
+select_spec:
 	  field_spec
 	| function_call_spec
 	| soql_subquery
 	| typeof_spec ;
 
-subquery_select_reference:
+subquery_select_spec:
 	  field_spec
 	| function_call_spec ;
 
@@ -588,7 +589,10 @@ field_list:
 
 /************************************** FROM_CLAUSE *************************************/
 
-object_reference:
+object_spec:
+    object_spec_ -> ^(OBJECT_SPEC<ObjectSpecNode> object_spec_) ;
+
+object_spec_:
 	( object_prefix )? object_name ( alias )? ;
 
 object_prefix:

@@ -6,7 +6,6 @@ import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
 import org.mule.soql.query.condition.ConditionField;
 import org.mule.soql.query.condition.ConditionSet;
 import org.mule.soql.query.condition.SetBasedCondition;
-import org.mule.soql.query.condition.operator.ComparisonOperator;
 import org.mule.soql.query.condition.operator.SetOperator;
 
 /**

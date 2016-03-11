@@ -3,6 +3,7 @@ package org.mule.soql.parser;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.parser.utils.SOQLCommonTreeUtils;
+import org.mule.soql.query.ObjectSpec;
 import org.mule.soql.query.clause.FromClause;
 
 import java.util.List;
@@ -20,52 +21,30 @@ public class FromClauseNode extends SOQLCommonTree {
     public FromClause createSOQLData() {
         FromClause fromClause = new FromClause();
 
-        this.processFirstNode(fromClause);
-        this.processSecondNode(fromClause);
-        this.processThirdNode(fromClause);
+        this.processChildren(fromClause);
 
         return fromClause;
     }
 
-    private void processFirstNode(FromClause fromClause) {
-        CommonTree child = (CommonTree) this.getChild(0);
-
-        if(child == null) { return; }
-
-        if (SOQLCommonTreeUtils.matchesAnyType(child,SOQLParser.OBJECT_PREFIX)) {
-            this.fillObjectNames(child,fromClause);
-        } else {
-            fromClause.setObjectName(child.getText());
-        }
-    }
-
-    private void processSecondNode(FromClause fromClause) {
-        CommonTree child = (CommonTree) this.getChild(1);
-
-        if(child == null) { return; }
-
-        if(fromClause.getObjectName() == null) {
-            fromClause.setObjectName(child.getText());
-        } else {
-            fromClause.setAlias(child.getText());
-        }
-    }
-
-    private void processThirdNode(FromClause fromClause) {
-        CommonTree child = (CommonTree) this.getChild(2);
-
-        if(child == null) { return; }
-
-        fromClause.setAlias(child.getText());
-    }
-
-    private void fillObjectNames(CommonTree node, FromClause fromClause) {
-        List<CommonTree> children = (List<CommonTree>) node.getChildren();
+    private void processChildren(FromClause fromClause) {
+        List<CommonTree> children = (List<CommonTree>) this.getChildren();
 
         if(children == null) { return; }
 
         for(CommonTree child : children) {
-            fromClause.addObjectName(child.getText());
+            this.fillObjectSpec(child, fromClause);
+        }
+    }
+
+    private void fillObjectSpec(CommonTree node, FromClause fromClause) {
+        if(!SOQLCommonTreeUtils.matchesAnyType(node, SOQLParser.OBJECT_SPEC)) { return; }
+
+        SOQLCommonTree soqlNode = (SOQLCommonTree) node;
+
+        if(node.getChildIndex() == 0) {
+            fromClause.setMainObjectSpec((ObjectSpec) soqlNode.createSOQLData());
+        } else {
+            fromClause.addRelationObjectSpec((ObjectSpec) soqlNode.createSOQLData());
         }
     }
 
