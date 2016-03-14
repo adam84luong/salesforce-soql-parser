@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mule.soql.SOQLParserHelper;
+import org.mule.soql.query.SOQLQuery;
 
 import java.io.IOException;
 
@@ -34,11 +35,11 @@ public abstract class SOQLParserTest {
 
 	@Test
 	public void testSOQLLine() throws IOException {
-		SOQLCommonTree tree = parserHelper.parseTextToTree(line);
+		SOQLQuery query = parserHelper.createSOQLData(line);
 
-		assertNotNull(tree);
+		assertNotNull(query);
 
-		String soqlText = tree.createSOQLData().toSOQLText();
+		String soqlText = query.toSOQLText();
 
 		assertEquals(line.replaceAll("\\s","").toLowerCase(), soqlText.replaceAll("\\s","").toLowerCase());
 	}

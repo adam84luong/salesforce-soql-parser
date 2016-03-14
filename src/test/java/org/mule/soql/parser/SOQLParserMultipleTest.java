@@ -30,10 +30,10 @@ public class SOQLParserMultipleTest extends SOQLParserTest {
                 { "select Id from Contact a, Contact.Account b, Contact.Parent c using scope my_territory where FirstName like 'A%' limit 10" },
 
                 //UPDATE example
-//                { "select Id from Contact a, Contact.Account b, Contact.Parent c where FirstName like 'A%' limit 10 update TRACKING,VIEWSTAT" },
+                { "select Id from Contact a, Contact.Account b, Contact.Parent c where FirstName like 'A%' limit 10 update TRACKING,VIEWSTAT" },
 
                 //FOR example
-//                { "select Id from Contact a, Contact.Account b, Contact.Parent c using scope my_territory where FirstName like 'A%' limit 10 for REFERENCE" },
+                { "select Id from Contact a, Contact.Account b, Contact.Parent c using scope my_territory where FirstName like 'A%' limit 10 for REFERENCE,VIEW,UPDATE" },
 
                 //GROUP BY ROLLUP
                 { "SELECT LeadSource, Rating, GROUPING(LeadSource), GROUPING(Rating) grpRating, COUNT(Name) cnt FROM Lead GROUP BY ROLLUP(LeadSource, Rating)" },

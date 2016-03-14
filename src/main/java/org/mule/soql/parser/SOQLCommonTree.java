@@ -4,8 +4,6 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 import org.mule.soql.query.SOQLData;
 
-import java.util.List;
-
 /**
  * Created by damianpelaez on 3/4/16.
  */

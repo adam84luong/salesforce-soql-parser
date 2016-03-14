@@ -2,6 +2,9 @@ package org.mule.soql.query.select;
 
 import org.mule.soql.query.SOQLData;
 import org.mule.soql.query.data.FunctionCall;
+import org.mule.soql.query.data.FunctionParameter;
+
+import java.util.List;
 
 /**
  * Created by damianpelaez on 3/6/16.
@@ -47,6 +50,20 @@ public class FunctionCallSpec extends SOQLData implements SelectSpec {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public String getFunctionName() {
+        if(functionCall == null) {
+            return null;
+        }
+        return functionCall.getFunctionName();
+    }
+
+    public List<FunctionParameter> getFunctionParameters() {
+        if(functionCall == null) {
+            return null;
+        }
+        return functionCall.getFunctionParameters();
     }
 
 }

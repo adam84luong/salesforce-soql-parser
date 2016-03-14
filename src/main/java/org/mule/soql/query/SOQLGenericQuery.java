@@ -6,16 +6,18 @@ import org.mule.soql.query.clause.*;
  * Created by damianpelaez on 3/6/16.
  */
 public abstract class SOQLGenericQuery extends SOQLData {
-    private SelectClause selectClause;
-    private FromClause fromClause;
-    private String usingFilterScope;
-    private WhereClause whereClause;
-    private WithClause withClause;
-    private GroupByClause groupByClause;
-    private HavingClause havingClause;
+    protected SelectClause selectClause;
+    protected FromClause fromClause;
+    protected String usingFilterScope;
+    protected WhereClause whereClause;
+    protected WithClause withClause;
+    protected GroupByClause groupByClause;
+    protected HavingClause havingClause;
     private OrderByClause orderByClause;
-    private Integer limit;
-    private Integer offset;
+    protected ForClause forClause;
+    protected UpdateClause updateClause;
+    protected Integer limit;
+    protected Integer offset;
 
     @Override
     public String toSOQLText() {
@@ -59,6 +61,14 @@ public abstract class SOQLGenericQuery extends SOQLData {
 
         if(offset != null) {
             sb.append(" ").append("OFFSET").append(" ").append(offset);
+        }
+
+        if(forClause != null) {
+            sb.append(" ").append(forClause.toSOQLText());
+        }
+
+        if(updateClause != null) {
+            sb.append(" ").append(updateClause.toSOQLText());
         }
 
         return sb.toString();
@@ -129,6 +139,22 @@ public abstract class SOQLGenericQuery extends SOQLData {
 
     public void setOrderByClause(OrderByClause orderByClause) {
         this.orderByClause = orderByClause;
+    }
+
+    public ForClause getForClause() {
+        return forClause;
+    }
+
+    public void setForClause(ForClause forClause) {
+        this.forClause = forClause;
+    }
+
+    public UpdateClause getUpdateClause() {
+        return updateClause;
+    }
+
+    public void setUpdateClause(UpdateClause updateClause) {
+        this.updateClause = updateClause;
     }
 
     public Integer getLimit() {

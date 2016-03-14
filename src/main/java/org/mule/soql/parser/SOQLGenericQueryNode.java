@@ -26,9 +26,11 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         this.fillOrderByClause(soqlQuery);
         this.fillLimit(soqlQuery);
         this.fillOffset(soqlQuery);
+        this.fillForClause(soqlQuery);
+        this.fillUpdateClause(soqlQuery);
     }
 
-    private void fillSelectClause(SOQLGenericQuery soqlQuery) {
+    protected void fillSelectClause(SOQLGenericQuery soqlQuery) {
         SOQLCommonTree node = (SOQLCommonTree) this.getFirstChildWithType(SOQLParser.SELECT);
 
         if(node == null) { return; }
@@ -36,7 +38,7 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         soqlQuery.setSelectClause((SelectClause) node.createSOQLData());
     }
 
-    private void fillFromClause(SOQLGenericQuery soqlQuery) {
+    protected void fillFromClause(SOQLGenericQuery soqlQuery) {
         SOQLCommonTree node = (SOQLCommonTree) this.getFirstChildWithType(SOQLParser.FROM);
 
         if(node == null) { return; }
@@ -44,7 +46,7 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         soqlQuery.setFromClause((FromClause) node.createSOQLData());
     }
 
-    private void fillUsingFilterScope(SOQLGenericQuery soqlQuery) {
+    protected void fillUsingFilterScope(SOQLGenericQuery soqlQuery) {
         CommonTree node = (CommonTree) this.getFirstChildWithType(SOQLParser.USING);
 
         if(node == null) { return; }
@@ -56,7 +58,7 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         soqlQuery.setUsingFilterScope(child.getText());
     }
 
-    private void fillWhereClause(SOQLGenericQuery soqlQuery) {
+    protected void fillWhereClause(SOQLGenericQuery soqlQuery) {
         SOQLCommonTree node = (SOQLCommonTree) this.getFirstChildWithType(SOQLParser.WHERE);
 
         if(node == null) { return; }
@@ -64,7 +66,7 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         soqlQuery.setWhereClause((WhereClause) node.createSOQLData());
     }
 
-    private void fillWithClause(SOQLGenericQuery soqlQuery) {
+    protected void fillWithClause(SOQLGenericQuery soqlQuery) {
         SOQLCommonTree node = (SOQLCommonTree) this.getFirstChildWithType(SOQLParser.WITH);
 
         if(node == null) { return; }
@@ -72,7 +74,7 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         soqlQuery.setWithClause((WithClause) node.createSOQLData());
     }
 
-    private void fillGroupByClause(SOQLGenericQuery soqlQuery) {
+    protected void fillGroupByClause(SOQLGenericQuery soqlQuery) {
         SOQLCommonTree node = (SOQLCommonTree) this.getFirstChildWithType(SOQLParser.GROUP);
 
         if(node == null) { return; }
@@ -80,7 +82,7 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         soqlQuery.setGroupByClause((GroupByClause) node.createSOQLData());
     }
 
-    private void fillHavingClause(SOQLGenericQuery soqlQuery) {
+    protected void fillHavingClause(SOQLGenericQuery soqlQuery) {
         SOQLCommonTree node = (SOQLCommonTree) this.getFirstChildWithType(SOQLParser.HAVING);
 
         if(node == null) { return; }
@@ -88,7 +90,7 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         soqlQuery.setHavingClause((HavingClause) node.createSOQLData());
     }
 
-    private void fillOrderByClause(SOQLGenericQuery soqlQuery) {
+    protected void fillOrderByClause(SOQLGenericQuery soqlQuery) {
         SOQLCommonTree node = (SOQLCommonTree) this.getFirstChildWithType(SOQLParser.ORDER);
 
         if(node == null) { return; }
@@ -96,7 +98,7 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         soqlQuery.setOrderByClause((OrderByClause) node.createSOQLData());
     }
 
-    private void fillLimit(SOQLGenericQuery soqlQuery) {
+    protected void fillLimit(SOQLGenericQuery soqlQuery) {
         CommonTree node = (CommonTree) this.getFirstChildWithType(SOQLParser.LIMIT);
 
         if(node == null) { return; }
@@ -106,7 +108,7 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         soqlQuery.setLimit(SOQLCommonTreeUtils.getTextAsInteger(child));
     }
 
-    private void fillOffset(SOQLGenericQuery soqlQuery) {
+    protected void fillOffset(SOQLGenericQuery soqlQuery) {
         CommonTree node = (CommonTree) this.getFirstChildWithType(SOQLParser.OFFSET);
 
         if(node == null) { return; }
@@ -114,6 +116,22 @@ public abstract class SOQLGenericQueryNode extends SOQLCommonTree {
         CommonTree child = (CommonTree) node.getChild(0);
 
         soqlQuery.setOffset(SOQLCommonTreeUtils.getTextAsInteger(child));
+    }
+
+    protected void fillForClause(SOQLGenericQuery soqlQuery) {
+        SOQLCommonTree node = (SOQLCommonTree) this.getFirstChildWithType(SOQLParser.FOR);
+
+        if(node == null) { return; }
+
+        soqlQuery.setForClause((ForClause) node.createSOQLData());
+    }
+
+    protected void fillUpdateClause(SOQLGenericQuery soqlQuery) {
+        SOQLCommonTree node = (SOQLCommonTree) this.getFirstChildWithType(SOQLParser.UPDATE);
+
+        if(node == null) { return; }
+
+        soqlQuery.setUpdateClause((UpdateClause) node.createSOQLData());
     }
 
 }
