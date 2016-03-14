@@ -1,4 +1,4 @@
-sf-soql-parser
-==============
+Salesforce SOQL Parser
+======================
 
 Salesforce Soql Antlr Parser for Java
