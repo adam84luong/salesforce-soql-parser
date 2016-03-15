@@ -1,5 +1,6 @@
 package org.mule.soql.query.clause;
 
+import org.mule.soql.SOQLDataVisitor;
 import org.mule.soql.query.option.UpdateOption;
 
 /**
@@ -13,6 +14,10 @@ public class UpdateClause extends OptionClause<UpdateOption> {
     @Override
     protected String getOptionClauseName() {
         return "UPDATE";
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitUpdateClause(this);
     }
 
 }

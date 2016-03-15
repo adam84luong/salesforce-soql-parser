@@ -1,5 +1,6 @@
 package org.mule.soql.query.clause;
 
+import org.mule.soql.SOQLDataVisitor;
 import org.mule.soql.query.with.DataCategorySpec;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class WithDataCategoryClause extends WithClause {
     public WithDataCategoryClause() {
     }
 
+    @Override
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
@@ -22,6 +24,10 @@ public class WithDataCategoryClause extends WithClause {
         sb.append(this.createSOQLListText(dataCategorySpecs, " AND "));
 
         return sb.toString();
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitWithDataCategoryClause(this);
     }
 
     public void addDataCategorySpec(DataCategorySpec dataCategorySpec) {

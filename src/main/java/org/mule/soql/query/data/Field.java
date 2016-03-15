@@ -1,6 +1,7 @@
 package org.mule.soql.query.data;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.SOQLDataVisitor;
+import org.mule.soql.query.SOQLAbstractData;
 import org.mule.soql.query.condition.ConditionField;
 import org.mule.soql.query.group.GroupBySpec;
 import org.mule.soql.query.order.OrderByField;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class Field extends SOQLData implements FunctionParameter, ConditionField, OrderByField, GroupBySpec {
+public class Field extends SOQLAbstractData implements FunctionParameter, ConditionField, OrderByField, GroupBySpec {
     private List<String> objectPrefixNames = new ArrayList<String>();
     private String fieldName;
 
@@ -37,6 +38,10 @@ public class Field extends SOQLData implements FunctionParameter, ConditionField
         }
 
         return sb.toString();
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitField(this);
     }
 
     public void addObjectPrefixName(String objectPrefixName) {

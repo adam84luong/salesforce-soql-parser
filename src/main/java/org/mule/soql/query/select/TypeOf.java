@@ -1,6 +1,7 @@
 package org.mule.soql.query.select;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.SOQLDataVisitor;
+import org.mule.soql.query.SOQLAbstractData;
 import org.mule.soql.query.data.Field;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.Map;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class TypeOf extends SOQLData implements SelectSpec {
+public class TypeOf extends SOQLAbstractData implements SelectSpec {
     private Field field;
     private LinkedHashMap<String,List<Field>> whenThenFields = new LinkedHashMap<String,List<Field>>();
     private List<Field> elseFields = new ArrayList<Field>();
@@ -46,6 +47,10 @@ public class TypeOf extends SOQLData implements SelectSpec {
         sb.append("END");
 
         return sb.toString();
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitTypeOf(this);
     }
 
     public void addWhenThenField(String objectName, Field field) {

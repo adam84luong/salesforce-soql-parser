@@ -217,6 +217,7 @@ GEOLOCATION         : G_ E_ O_ L_ O_ C_ A_ T_ I_ O_ N_ ;
 
 /********** OTHER FUNCTIONS **********/
 
+FORMAT              : F_ O_ R_ M_ A_ T_ ;
 TOLABEL		        : T_ O_ L_ A_ B_ E_ L_ ;
 CONVERT_TIME_ZONE   : C_ O_ N_ V_ E_ R_ T_ T_ I_ M_ E_ Z_ O_ N_ E_ ;
 CONVERT_CURRENCY    : C_ O_ N_ V_ E_ R_ T_ C_ U_ R_ R_ E_ N_ C_ Y_ ;
@@ -341,7 +342,7 @@ keywords_name_allowed :
 
 /********** NAMES **********/
 
-name                      : ID | keywords_name_allowed ;
+name                      : ID | keywords_name_allowed | date_formula_literal | date_formula_n_literal_name | function_name ;
 object_name	              : name ;
 field_name		          : name ;
 filter_scope_name         : name ;
@@ -454,7 +455,8 @@ function_location:
 ;
 
 function_other:
-	  TOLABEL
+	  FORMAT
+	| TOLABEL
 	| CONVERT_TIME_ZONE
 	| CONVERT_CURRENCY
 	| GROUPING

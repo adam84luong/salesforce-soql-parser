@@ -1,5 +1,6 @@
 package org.mule.soql.query.clause;
 
+import org.mule.soql.SOQLDataVisitor;
 import org.mule.soql.query.condition.FieldBasedCondition;
 
 /**
@@ -25,6 +26,10 @@ public class WithPlainClause extends WithClause {
         }
 
         return sb.toString();
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitWithPlainClause(this);
     }
 
     public FieldBasedCondition getFieldBasedCondition() {

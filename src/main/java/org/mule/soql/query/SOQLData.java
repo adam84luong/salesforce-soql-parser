@@ -1,37 +1,14 @@
 package org.mule.soql.query;
 
-import org.apache.commons.lang.StringUtils;
+import org.mule.soql.SOQLDataVisitor;
 
 /**
- * Created by damianpelaez on 3/6/16.
+ * Created by damianpelaez on 3/7/16.
  */
-public class SOQLData implements ISOQLData {
+public interface SOQLData {
 
-    public String toSOQLText() {
-        return "";
-    }
+    String toSOQLText();
 
-    @Override
-    public String toString() {
-        return this.toSOQLText();
-    }
-
-    protected String createSOQLListText(Iterable<? extends Object> list, String separator) {
-        StringBuilder sb = new StringBuilder();
-
-        Boolean first = true;
-        if(list != null) {
-            for(Object item : list) {
-                if(first) {
-                    first = false;
-                } else {
-                    sb.append(StringUtils.defaultIfEmpty(separator, ","));
-                }
-                sb.append(item.toString());
-            }
-        }
-
-        return sb.toString();
-    }
+    <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor);
 
 }

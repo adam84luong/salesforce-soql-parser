@@ -1,10 +1,10 @@
 package org.mule.soql.query.order;
 
-import org.mule.soql.query.ISOQLData;
+import org.mule.soql.query.SOQLData;
 
 /**
  * Created by damianpelaez on 3/7/16.
  */
-public interface OrderByField extends ISOQLData {
+public interface OrderByField extends SOQLData {
 
 }

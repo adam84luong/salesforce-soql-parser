@@ -1,12 +1,12 @@
 package org.mule.soql.query.condition.operator;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.SOQLAbstractData;
 import org.mule.soql.query.condition.Condition;
 
 /**
  * Created by damianpelaez on 3/8/16.
  */
-public abstract class LogicalBinaryOperator extends SOQLData implements Condition {
+public abstract class LogicalBinaryOperator extends SOQLAbstractData implements Condition {
     protected Condition leftCondition;
     protected Condition rightCondition;
 
@@ -18,6 +18,7 @@ public abstract class LogicalBinaryOperator extends SOQLData implements Conditio
         this.rightCondition = rightCondition;
     }
 
+    @Override
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
         

@@ -1,11 +1,12 @@
 package org.mule.soql.query.order;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.SOQLDataVisitor;
+import org.mule.soql.query.SOQLAbstractData;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class OrderBySpec extends SOQLData {
+public class OrderBySpec extends SOQLAbstractData {
     private OrderByField orderByField;
     private OrderByDirection direction;
     private OrderByNulls nulls;
@@ -36,6 +37,10 @@ public class OrderBySpec extends SOQLData {
         }
 
         return sb.toString();
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitOrderBySpec(this);
     }
 
     public OrderByField getOrderByField() {

@@ -1,11 +1,14 @@
 package org.mule.soql.query;
 
 import org.mule.soql.query.clause.*;
+import org.mule.soql.query.select.SelectSpec;
+
+import java.util.List;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public abstract class SOQLGenericQuery extends SOQLData {
+public abstract class SOQLGenericQuery extends SOQLAbstractData {
     protected SelectClause selectClause;
     protected FromClause fromClause;
     protected String usingFilterScope;
@@ -171,6 +174,13 @@ public abstract class SOQLGenericQuery extends SOQLData {
 
     public void setOffset(Integer offset) {
         this.offset = offset;
+    }
+
+    public List<SelectSpec> getSelectSpecs() {
+        if(selectClause == null) {
+            return null;
+        }
+        return selectClause.getSelectSpecs();
     }
 
 }

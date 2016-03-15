@@ -1,6 +1,7 @@
 package org.mule.soql.query.from;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.SOQLDataVisitor;
+import org.mule.soql.query.SOQLAbstractData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class ObjectSpec extends SOQLData {
+public class ObjectSpec extends SOQLAbstractData {
     private List<String> objectPrefixNames = new ArrayList<String>();
     private String objectName;
     private String alias;
@@ -40,6 +41,10 @@ public class ObjectSpec extends SOQLData {
         }
 
         return sb.toString();
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitObjectSpec(this);
     }
 
     public void addObjectPrefixName(String objectPrefixName) {

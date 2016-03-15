@@ -1,5 +1,6 @@
 package org.mule.soql.query.condition.operator;
 
+import org.mule.soql.SOQLDataVisitor;
 import org.mule.soql.query.condition.Condition;
 
 /**
@@ -14,6 +15,7 @@ public class NotOperator extends LogicalUnaryOperator {
         this.condition = condition;
     }
 
+    @Override
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
@@ -29,6 +31,10 @@ public class NotOperator extends LogicalUnaryOperator {
     @Override
     protected String getOperatorName() {
         return "NOT";
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitNorOperator(this);
     }
 
 }

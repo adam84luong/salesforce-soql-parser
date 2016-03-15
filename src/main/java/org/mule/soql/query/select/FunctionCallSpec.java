@@ -1,6 +1,7 @@
 package org.mule.soql.query.select;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.SOQLDataVisitor;
+import org.mule.soql.query.SOQLAbstractData;
 import org.mule.soql.query.data.FunctionCall;
 import org.mule.soql.query.data.FunctionParameter;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class FunctionCallSpec extends SOQLData implements SelectSpec {
+public class FunctionCallSpec extends SOQLAbstractData implements SelectSpec {
     private FunctionCall functionCall;
     private String alias;
 
@@ -34,6 +35,10 @@ public class FunctionCallSpec extends SOQLData implements SelectSpec {
         }
 
         return sb.toString();
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitFunctionCallSpec(this);
     }
 
     public FunctionCall getFunctionCall() {

@@ -1,12 +1,13 @@
 package org.mule.soql.query.condition;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.SOQLDataVisitor;
+import org.mule.soql.query.SOQLAbstractData;
 import org.mule.soql.query.condition.operator.SetOperator;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class SetBasedCondition extends SOQLData implements Condition {
+public class SetBasedCondition extends SOQLAbstractData implements Condition {
     private ConditionField conditionField;
     private SetOperator operator;
     private ConditionSet set;
@@ -35,6 +36,10 @@ public class SetBasedCondition extends SOQLData implements Condition {
         }
 
         return sb.toString();
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitSetBasedCondition(this);
     }
 
     public ConditionField getConditionField() {

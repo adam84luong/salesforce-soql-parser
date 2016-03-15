@@ -1,11 +1,12 @@
 package org.mule.soql.query.condition;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.SOQLDataVisitor;
+import org.mule.soql.query.SOQLAbstractData;
 
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class LikeBasedCondition extends SOQLData implements Condition {
+public class LikeBasedCondition extends SOQLAbstractData implements Condition {
     private ConditionField conditionField;
     private String likeString;
 
@@ -32,6 +33,10 @@ public class LikeBasedCondition extends SOQLData implements Condition {
         }
 
         return sb.toString();
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitLikeBasedCondition(this);
     }
 
     public ConditionField getConditionField() {

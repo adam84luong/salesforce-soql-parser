@@ -1,12 +1,12 @@
 package org.mule.soql.query.condition.operator;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.SOQLAbstractData;
 import org.mule.soql.query.condition.Condition;
 
 /**
  * Created by damianpelaez on 3/8/16.
  */
-public abstract class LogicalUnaryOperator extends SOQLData implements Condition {
+public abstract class LogicalUnaryOperator extends SOQLAbstractData implements Condition {
     protected Condition condition;
 
     public LogicalUnaryOperator() {

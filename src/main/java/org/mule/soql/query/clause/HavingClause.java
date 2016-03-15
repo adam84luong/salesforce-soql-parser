@@ -1,5 +1,6 @@
 package org.mule.soql.query.clause;
 
+import org.mule.soql.SOQLDataVisitor;
 import org.mule.soql.query.condition.Condition;
 
 /**
@@ -16,6 +17,10 @@ public class HavingClause extends ConditionClause {
 
     protected String getConditionName() {
         return "HAVING";
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitHavingClause(this);
     }
 
 }

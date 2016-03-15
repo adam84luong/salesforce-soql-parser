@@ -1,6 +1,7 @@
 package org.mule.soql.query.clause;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.SOQLDataVisitor;
+import org.mule.soql.query.SOQLAbstractData;
 import org.mule.soql.query.from.ObjectSpec;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by damianpelaez on 3/6/16.
  */
-public class FromClause extends SOQLData {
+public class FromClause extends SOQLAbstractData {
     private List<ObjectSpec> relationObjectSpecs = new ArrayList<ObjectSpec>();
     private ObjectSpec mainObjectSpec;
 
@@ -59,6 +60,10 @@ public class FromClause extends SOQLData {
 
     public List<ObjectSpec> getRelationObjectSpecs() {
         return relationObjectSpecs;
+    }
+
+    public <T> T accept(SOQLDataVisitor<? extends T> soqlDataVisitor) {
+        return soqlDataVisitor.visitFromClause(this);
     }
 
 }

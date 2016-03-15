@@ -1,12 +1,12 @@
 package org.mule.soql.query.clause;
 
-import org.mule.soql.query.SOQLData;
+import org.mule.soql.query.SOQLAbstractData;
 import org.mule.soql.query.condition.Condition;
 
 /**
  * Created by damianpelaez on 3/8/16.
  */
-public abstract class ConditionClause extends SOQLData {
+public abstract class ConditionClause extends SOQLAbstractData {
     protected Condition condition;
 
     public ConditionClause() {
@@ -16,6 +16,7 @@ public abstract class ConditionClause extends SOQLData {
         this.condition = condition;
     }
 
+    @Override
     public String toSOQLText() {
         StringBuilder sb = new StringBuilder();
 
