@@ -1,6 +1,7 @@
 package org.mule.soql.query;
 
 import org.mule.soql.query.clause.*;
+import org.mule.soql.query.from.ObjectSpec;
 import org.mule.soql.query.select.SelectSpec;
 
 import java.util.List;
@@ -181,6 +182,13 @@ public abstract class SOQLGenericQuery extends SOQLAbstractData {
             return null;
         }
         return selectClause.getSelectSpecs();
+    }
+
+    public ObjectSpec getMainObjectSpec() {
+        if(fromClause == null) {
+            return null;
+        }
+        return fromClause.getMainObjectSpec();
     }
 
 }

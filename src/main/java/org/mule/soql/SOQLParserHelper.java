@@ -21,8 +21,8 @@ public class SOQLParserHelper {
 	 * @return {@link SOQLQuery} Friendly SOQL data structure
 	 * @throws {@link SOQLParsingException}
      */
-	public SOQLQuery createSOQLData(String text) throws SOQLParsingException {
-		SOQLCommonTree tree =  this.createSOQLParserTree(text);
+	public static SOQLQuery createSOQLData(String text) throws SOQLParsingException {
+		SOQLCommonTree tree =  createSOQLParserTree(text);
 		return tree.createSOQLData();
 	}
 
@@ -34,7 +34,7 @@ public class SOQLParserHelper {
 	 * @return {@link SOQLCommonTree} Root node of the ANTLR AST tree
 	 * @throws {@link SOQLParsingException}
 	 */
-	public SOQLCommonTree createSOQLParserTree(String text) throws SOQLParsingException {
+	public static SOQLCommonTree createSOQLParserTree(String text) throws SOQLParsingException {
 		try {
 			ANTLRStringStream input = new ANTLRStringStream(text);
 			TokenStream tokens = new CommonTokenStream(new SOQLLexer(input));

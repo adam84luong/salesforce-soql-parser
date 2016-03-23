@@ -20,12 +20,10 @@ import static org.junit.Assert.assertEquals;
 
 
 public class SOQLDataVisitorTest {
-	private SOQLParserHelper parserHelper;
 	private SOQLDataVisitor selectSpecPrefixVisitor;
 
 	@Before
 	public void setUp() {
-		parserHelper = new SOQLParserHelper();
 		selectSpecPrefixVisitor = new SOQLDataBaseVisitor<String>(){
 			String prefix = "SelectSpec";
 
@@ -52,7 +50,7 @@ public class SOQLDataVisitorTest {
 	public void testSOQLLine() throws IOException {
 		String line = "select id, format(id) formatedId, (select id, createddate from campaignmembers order by createddate limit 1) from campaign bla where recordtype.name like 'FDB %'";
 
-		SOQLQuery query = parserHelper.createSOQLData(line);
+		SOQLQuery query = SOQLParserHelper.createSOQLData(line);
 
 		List<SelectSpec> selectSpecs = query.getSelectSpecs();
 

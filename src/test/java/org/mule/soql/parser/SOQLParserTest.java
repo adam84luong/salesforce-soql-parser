@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotNull;
 
 
 public abstract class SOQLParserTest {
-	private SOQLParserHelper parserHelper;
 	private String line;
 
 	public SOQLParserTest(String line) {
@@ -30,12 +29,11 @@ public abstract class SOQLParserTest {
 
 	@Before
 	public void setUp() {
-		parserHelper = new SOQLParserHelper();
 	}
 
 	@Test
 	public void testSOQLLine() throws IOException {
-		SOQLQuery query = parserHelper.createSOQLData(line);
+		SOQLQuery query = SOQLParserHelper.createSOQLData(line);
 
 		assertNotNull(query);
 
