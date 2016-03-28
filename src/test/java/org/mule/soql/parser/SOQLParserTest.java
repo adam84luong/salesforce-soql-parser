@@ -20,7 +20,7 @@ public abstract class SOQLParserTest {
 		this.line = this.cleanLine(line);
 	}
 
-	private String cleanLine(String line) {
+	protected String cleanLine(String line) {
 		String tmp = line;
 		tmp = StringUtils.removeStart(tmp, "\"");
 		tmp = StringUtils.removeEnd(tmp, "\"");
