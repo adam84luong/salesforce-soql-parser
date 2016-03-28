@@ -47,26 +47,32 @@ package org.mule.soql.parser;
     }
 }
 
-@parser::members {
-	protected Object recoverFromMismatchedToken(IntStream input,int ttype, BitSet follow) throws RecognitionException {
-        MismatchedTokenException ex = new MismatchedTokenException(ttype, input);
-		throw new org.mule.soql.exception.SOQLParsingException("Invalid token at " + ex.line + ":" + ex.charPositionInLine);
-	}
-	
-	protected void mismatch(IntStream input, int ttype, BitSet follow) throws RecognitionException {
-        throw new MismatchedTokenException(ttype, input);
+@lexer::members {
+    @Override
+    public void reportError(RecognitionException e) {
+        throw new org.mule.soql.exception.LexerException(e);
     }
+}
 
+@parser::members {
+	@Override
+	protected Object recoverFromMismatchedToken(IntStream input,int ttype, BitSet follow) throws RecognitionException {
+        throw new MismatchedTokenException(ttype, input);
+	}
+
+    @Override
     public Object recoverFromMismatchedSet(IntStream input, RecognitionException e, BitSet follow) throws RecognitionException {
         throw e;
     }
 
+    @Override
     public void reportError(RecognitionException e) {
-        throw new org.mule.soql.exception.SOQLParsingException(e);
+        throw new org.mule.soql.exception.ParserException(e);
     }
 
-    public void recover(RecognitionException e) {
-        throw new org.mule.soql.exception.SOQLParsingException(e);
+    @Override
+    public void recover(IntStream input, RecognitionException e) {
+        throw new org.mule.soql.exception.ParserException(e);
     }
 }
 

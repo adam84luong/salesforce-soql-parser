@@ -2,6 +2,9 @@ package org.mule.soql;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.CommonTree;
+import org.apache.commons.lang.StringUtils;
+import org.mule.soql.exception.LexerException;
+import org.mule.soql.exception.ParserException;
 import org.mule.soql.exception.SOQLParsingException;
 import org.mule.soql.parser.SOQLCommonTree;
 import org.mule.soql.parser.SOQLLexer;
@@ -35,6 +38,10 @@ public class SOQLParserHelper {
 	 * @throws {@link SOQLParsingException}
 	 */
 	public static SOQLCommonTree createSOQLParserTree(String text) throws SOQLParsingException {
+		if(StringUtils.isBlank(text)) {
+			throw createEmptyTextException();
+		}
+
 		try {
 			ANTLRStringStream input = new ANTLRStringStream(text);
 			TokenStream tokens = new CommonTokenStream(new SOQLLexer(input));
@@ -45,16 +52,61 @@ public class SOQLParserHelper {
 			SOQLCommonTree tree = (SOQLCommonTree) ret.getTree();
 
 			if(tree == null) {
-				throw new SOQLParsingException("The SOQL tree could not be generated due to an unexpected error.");
+				throw createUnexpectedException();
 			}
 
 			return tree;
 
-		} catch (NoViableAltException e) {
-			throw new SOQLParsingException("Syntax error close to '" + e.token.getText() + "' (position: " + e.charPositionInLine + ").", e);
+		} catch (LexerException e) {
+			throw createParsingException(e.getCause());
+		} catch (ParserException e) {
+			throw createParsingException(e.getCause());
 		} catch (RecognitionException e) {
-			throw new SOQLParsingException("Recognition exception is never thrown, only declared.", e);
+			throw createParsingException(e);
 		}
+	}
+
+	private static SOQLParsingException createEmptyTextException() {
+		return new SOQLParsingException("The text provided for SOQL parsing is either null or empty.");
+	}
+
+	private static SOQLParsingException createUnexpectedException() {
+		return new SOQLParsingException("The SOQL tree could not be generated due to an unexpected error.");
+	}
+
+	private static SOQLParsingException createParsingException(Throwable t) {
+		if(t == null) {
+			return new SOQLParsingException();
+		}
+		if(!(t instanceof RecognitionException)) {
+			return new SOQLParsingException(t);
+		}
+		return createParsingRecognitionException((RecognitionException) t);
+	}
+
+	private static SOQLParsingException createParsingRecognitionException(RecognitionException e) {
+		String failingText = e.token != null ?  e.token.getText() : null;
+		String lineNumber = e.line >= 0 ? new Integer(e.line).toString() : null;
+		String charPositionInLine = e.charPositionInLine >= 0 ? new Integer(e.charPositionInLine).toString() : null;
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("There was a SOQL parsing error");
+
+		if(StringUtils.isNotBlank(failingText)) {
+			sb.append(" close to '").append(failingText).append("'");
+		}
+
+		if(StringUtils.isNotBlank(lineNumber) && StringUtils.isNotBlank(charPositionInLine)) {
+			sb.append(" (line:").append(lineNumber).append(",position:").append(charPositionInLine).append(")");
+		}
+
+		sb.append(".");
+
+		if(e.getMessage() != null) {
+			sb.append(" Message: ").append(e.getMessage());
+		}
+
+		return new SOQLParsingException(sb.toString(), e);
 	}
 
 }
