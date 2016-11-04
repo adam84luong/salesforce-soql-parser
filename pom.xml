@@ -4,7 +4,7 @@
 
 	<groupId>com.mulesoft.sfdl</groupId>
 	<artifactId>salesforce-soql-parser</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>salesforce-soql-parser</name>
