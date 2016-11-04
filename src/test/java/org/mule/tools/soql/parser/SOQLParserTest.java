@@ -1,11 +1,11 @@
-package org.mule.soql.parser;
+package org.mule.tools.soql.parser;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mule.soql.SOQLParserHelper;
+import org.mule.tools.soql.SOQLParserHelper;
 
 import java.io.IOException;
 

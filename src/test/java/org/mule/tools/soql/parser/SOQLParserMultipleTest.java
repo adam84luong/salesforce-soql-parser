@@ -1,4 +1,4 @@
-package org.mule.soql.parser;
+package org.mule.tools.soql.parser;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

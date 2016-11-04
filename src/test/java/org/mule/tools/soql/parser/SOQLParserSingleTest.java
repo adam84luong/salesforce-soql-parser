@@ -1,4 +1,4 @@
-package org.mule.soql.parser;
+package org.mule.tools.soql.parser;
 
 public class SOQLParserSingleTest extends SOQLParserTest {
 

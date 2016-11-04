@@ -1,10 +1,10 @@
-package org.mule.soql.parser;
+package org.mule.tools.soql.parser;
 
 import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.junit.Test;
-import org.mule.soql.SOQLParserHelper;
-import org.mule.soql.exception.SOQLParsingException;
+import org.mule.tools.soql.SOQLParserHelper;
+import org.mule.tools.soql.exception.SOQLParsingException;
 
 import java.io.IOException;
 

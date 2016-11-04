@@ -1,10 +1,10 @@
-package org.mule.soql;
+package org.mule.tools.soql;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang.StringUtils;
-import org.mule.soql.exception.SOQLParsingException;
+import org.mule.tools.soql.exception.SOQLParsingException;
 
 import org.mule.soql.parser.SOQLLexer;
 import org.mule.soql.parser.SOQLParser;

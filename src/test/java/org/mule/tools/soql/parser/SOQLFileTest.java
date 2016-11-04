@@ -1,16 +1,16 @@
-package org.mule.soql.parser;
+package org.mule.tools.soql.parser;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class SOQLSmallFileTest extends SOQLParserTest {
+public class SOQLFileTest extends SOQLParserTest {
 
-    public SOQLSmallFileTest(String line) {
+    public SOQLFileTest(String line) {
         super(line);
     }
 
-    private static final String FILENAME = "src/test/resources/SOQLSmall.csv";
+    private static final String FILENAME = "src/test/resources/SOQLTest.csv";
 
     @Parameterized.Parameters
     public static Iterable<Object[]> data() throws Exception {

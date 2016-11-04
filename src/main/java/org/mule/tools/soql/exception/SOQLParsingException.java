@@ -1,4 +1,4 @@
-package org.mule.soql.exception;
+package org.mule.tools.soql.exception;
 
 public class SOQLParsingException extends RuntimeException {
 
