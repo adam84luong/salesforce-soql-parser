@@ -1,11 +1,11 @@
 package org.mule.soql.parser;
 
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mule.soql.SOQLParserHelper;
-import org.mule.soql.query.SOQLQuery;
 
 import java.io.IOException;
 
@@ -33,13 +33,19 @@ public abstract class SOQLParserTest {
 
 	@Test
 	public void testSOQLLine() throws IOException {
-		SOQLQuery query = SOQLParserHelper.createSOQLData(line);
+		ParseTree tree = SOQLParserHelper.createSOQLParserTree(line);
 
-		assertNotNull(query);
+		assertNotNull(tree);
 
-		String soqlText = query.toSOQLText();
+		String soqlText = tree.getText();
 
-		assertEquals(line.replaceAll("\\s","").toLowerCase(), soqlText.replaceAll("\\s","").toLowerCase());
+		assertEquals(this.cleanLineForComparison(line), this.cleanLineForComparison(soqlText));
+	}
+
+	protected String cleanLineForComparison(String line) {
+		String returnLine = line.replaceAll("\\s","");
+		returnLine = StringUtils.removeEndIgnoreCase(returnLine,"<eof>");
+		return returnLine.toLowerCase();
 	}
 
 	@After

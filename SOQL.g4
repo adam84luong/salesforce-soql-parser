@@ -1,81 +1,5 @@
 grammar SOQL;
 
-options
-{
-  language = Java;
-  output = AST;
-  ASTLabelType = CommonTree;
-  backtrack = true;
-}
-
-tokens {
-    LITERAL;
-    SOQL_QUERY;
-    SOQL_SUBQUERY;
-    FIELD_SPEC;
-    FIELD;
-    FUNCTION_CALL_SPEC;
-    FUNCTION_CALL;
-    OBJECT_SPEC;
-    OBJECT_PREFIX;
-    TYPEOF_WHEN_THEN_CLAUSES;
-    FUNCTION_PARAMETERS;
-    FIELD_BASED_CONDITION;
-    SET_BASED_CONDITION;
-    LIKE_BASED_CONDITION;
-    OPERATOR;
-    PARENTHESIS;
-    SET_VALUES;
-    ORDER_BY_SPEC;
-    WITH_PLAIN_CLAUSE;
-    DATA_CATEGORY_SPEC;
-    DATA_CATEGORY_PARAMETERS;
-    GROUP_BY_PLAIN_CLAUSE;
-}
-
-@lexer::header {
-package org.mule.soql.parser;
-}
-
-@parser::header {
-package org.mule.soql.parser;
-}
-
-@rulecatch {
-    catch (RecognitionException e) {
-        throw e;
-    }
-}
-
-@lexer::members {
-    @Override
-    public void reportError(RecognitionException e) {
-        throw new org.mule.soql.exception.LexerException(e);
-    }
-}
-
-@parser::members {
-	@Override
-	protected Object recoverFromMismatchedToken(IntStream input,int ttype, BitSet follow) throws RecognitionException {
-        throw new MismatchedTokenException(ttype, input);
-	}
-
-    @Override
-    public Object recoverFromMismatchedSet(IntStream input, RecognitionException e, BitSet follow) throws RecognitionException {
-        throw e;
-    }
-
-    @Override
-    public void reportError(RecognitionException e) {
-        throw new org.mule.soql.exception.ParserException(e);
-    }
-
-    @Override
-    public void recover(IntStream input, RecognitionException e) {
-        throw new org.mule.soql.exception.ParserException(e);
-    }
-}
-
 fragment A_ :	'a' | 'A';
 fragment B_ :	'b' | 'B';
 fragment C_ :	'c' | 'C';
@@ -109,7 +33,7 @@ fragment Z_ :	'z' | 'Z';
 /*------------------------------------------------------------------------------------------------------------------------*/
 
 
-WHITE_SPACE	       : ( ' '|'\r'|'\t'|'\n' ) {$channel=HIDDEN;} ;
+WHITE_SPACE	       : ( ' '|'\r'|'\t'|'\n' ) -> channel(HIDDEN) ;
 
 /********** STRINGS **********/
 
@@ -356,14 +280,11 @@ data_category_group_name  : name ;
 data_category_name        : name ;
 
 alias_name                : ID | keywords_alias_allowed | date_formula_literal | date_formula_n_literal_name | function_name ;
-alias			          : ( AS! )? alias_name ;
+alias			          : ( AS )? alias_name ;
 
 /********** LITERALS **********/
 
 literal:
-    literal_ -> ^(LITERAL<LiteralNode> literal_) ;
-
-literal_:
 	date_formula_literal | date_formula_n_literal | datetime_literal | date_literal | integer_literal | real_literal | string_literal | boolean_literal | null_literal ;
 
 date_formula_literal:
@@ -416,7 +337,7 @@ date_formula_n_literal_name:
    	| N_FISCAL_YEARS_AGO
 ;
 
-date_formula_n_literal: date_formula_n_literal_name COLON! UNSIGNED_INTEGER ;
+date_formula_n_literal: date_formula_n_literal_name COLON UNSIGNED_INTEGER ;
 datetime_literal: DATETIME ;
 date_literal: DATE ;
 integer_literal: SIGNED_INTEGER | UNSIGNED_INTEGER ;
@@ -471,54 +392,48 @@ function_other:
 /************************************* SELECT QUERY *************************************/
 
 soql_query:
-    soql_query_ -> ^(SOQL_QUERY<SOQLQueryNode> soql_query_) ;
-
-soql_query_:
-	select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ( for_clause )? ( update_clause )? EOF! ;
+	select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( groupby_clause ( having_clause )? )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ( for_clause )? ( update_clause )? EOF ;
 
 select_clause:
-    SELECT<SelectClauseNode>^ select_spec ( COMMA! select_spec )* ;
+    SELECT<SelectClauseNode> select_spec ( COMMA select_spec )* ;
 
 from_clause:
-    FROM<FromClauseNode>^ object_spec ( COMMA! object_spec )* ;
+    FROM<FromClauseNode> object_spec ( COMMA object_spec )* ;
 
 using_clause:
-	USING^ SCOPE! filter_scope_name ;
+	USING SCOPE filter_scope_name ;
 
 where_clause:
-	WHERE<ConditionClauseNode>^ condition ;
+	WHERE<ConditionClauseNode> condition ;
 
 groupby_clause:
-	GROUP<GroupByClauseNode>^ BY! ( group_by_rollup_clause | group_by_cube_clause | group_by_plain_clause ) ;
+	GROUP<GroupByClauseNode> BY ( group_by_rollup_clause | group_by_cube_clause | group_by_plain_clause ) ;
 
 having_clause:
-	HAVING<ConditionClauseNode>^ condition ;
+	HAVING<ConditionClauseNode> condition ;
 
 orderby_clause:
-	ORDER<OrderByClauseNode>^ BY! order_by_list ;
+	ORDER<OrderByClauseNode> BY order_by_list ;
 
 limit_clause:
-	LIMIT^ UNSIGNED_INTEGER ;
+	LIMIT UNSIGNED_INTEGER ;
 	
 offset_clause:
-	OFFSET^ UNSIGNED_INTEGER ;
+	OFFSET UNSIGNED_INTEGER ;
 
 for_clause:
-    FOR<OptionClauseNode>^ for_value ( COMMA! for_value )? ( COMMA! for_value )? ;
+    FOR<OptionClauseNode> for_value ( COMMA for_value )? ( COMMA for_value )? ;
 
 update_clause:
-    UPDATE<OptionClauseNode>^ update_value ( COMMA! update_value )? ;
+    UPDATE<OptionClauseNode> update_value ( COMMA update_value )? ;
 
 /************************************ SELECT SUBQUERY ***********************************/
 
 soql_subquery:
-    soql_subquery_ -> ^(SOQL_SUBQUERY<SOQLSubQueryNode> soql_subquery_) ;
-
-soql_subquery_:
-    LPAREN! subquery_select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ( for_clause )? ( update_clause )? RPAREN! ;
+    LPAREN subquery_select_clause from_clause ( using_clause )? ( where_clause )? ( with_clause )? ( orderby_clause )? ( limit_clause )? ( offset_clause )? ( for_clause )? ( update_clause )? RPAREN ;
 
 subquery_select_clause:
-    SELECT<SelectClauseNode>^ subquery_select_spec ( COMMA! subquery_select_spec )* ;
+    SELECT<SelectClauseNode> subquery_select_spec ( COMMA subquery_select_spec )* ;
 
 /************************************ SELECT REFERENCES *********************************/
 
@@ -533,38 +448,23 @@ subquery_select_spec:
 	| function_call_spec ;
 
 field_spec:
-    field_spec_ -> ^(FIELD_SPEC<FieldSpecNode> field_spec_) ;
-
-field_spec_:
 	field ( alias )? ;
 
 function_call_spec:
-    function_call_spec_ -> ^(FUNCTION_CALL_SPEC<FunctionCallSpecNode> function_call_spec_) ;
-
-function_call_spec_:
 	function_call ( alias )? ;
 
 /***************************************** FIELD ****************************************/
 
 field:
-    field_ -> ^(FIELD<FieldNode> field_) ;
-
-field_:
     ( object_prefix )? field_name ;
 
 /*************************************** FUNCTION ***************************************/
 
 function_call:
-    function_call_ -> ^(FUNCTION_CALL<FunctionCallNode> function_call_) ;
-
-function_call_:
-	function_name LPAREN! ( function_parameter_list )? RPAREN! ;
+	function_name LPAREN ( function_parameter_list )? RPAREN ;
 
 function_parameter_list:
-    function_parameter_list_ -> ^(FUNCTION_PARAMETERS function_parameter_list_) ;
-
-function_parameter_list_:
-	function_parameter ( COMMA! function_parameter )* ;
+	function_parameter ( COMMA function_parameter )* ;
 
 function_parameter:
 	field | literal | function_call ;
@@ -572,128 +472,89 @@ function_parameter:
 /***************************************** TYPEOF ***************************************/
 
 typeof_spec:
-	TYPEOF<TypeOfNode>^ field
+	TYPEOF<TypeOfNode> field
 		typeof_when_then_clause_list
 		( typeof_else_clause )?
-	END! ;
+	END ;
 
 typeof_when_then_clause_list:
-    typeof_when_then_clause_list_ -> ^(TYPEOF_WHEN_THEN_CLAUSES typeof_when_then_clause_list_) ;
-
-typeof_when_then_clause_list_:
     ( typeof_when_then_clause )+ ;
 
 typeof_when_then_clause:
-    WHEN^ object_name typeof_then_clause ;
+    WHEN object_name typeof_then_clause ;
 
 typeof_then_clause:
-    THEN^ field_list ;
+    THEN field_list ;
 
 typeof_else_clause:
-    ELSE^ field_list ;
+    ELSE field_list ;
 
 field_list:
-    field ( COMMA! field )* ;
+    field ( COMMA field )* ;
 
 /************************************** FROM_CLAUSE *************************************/
 
 object_spec:
-    object_spec_ -> ^(OBJECT_SPEC<ObjectSpecNode> object_spec_) ;
-
-object_spec_:
 	( object_prefix )? object_name ( alias )? ;
 
 object_prefix:
-    object_prefix_ -> ^(OBJECT_PREFIX object_prefix_) ;
-
-object_prefix_:
-    ( object_name DOT! )+ ;
+    ( object_name DOT )+ ;
 
 /*************************************** CONDITION **************************************/
 
-comparison_operator:
-    comparison_operator_ -> ^(OPERATOR comparison_operator_) ;
+comparison_operator : EQ | NOT_EQ | LET | GET | GTH | LTH | GTH EQ | LTH EQ ;
 
-comparison_operator_ : EQ | NOT_EQ | LET | GET | GTH | LTH | GTH EQ | LTH EQ ;
-
-set_operator:
-    set_operator_ -> ^(OPERATOR set_operator_) ;
-
-set_operator_   : IN | NOT IN | INCLUDES | EXCLUDES;
+set_operator   : IN | NOT IN | INCLUDES | EXCLUDES;
 
 condition:
-	condition1 ( ( OR<LogicalBinaryOperatorNode>^ | AND<LogicalBinaryOperatorNode>^ ) condition1 )* ;
+	condition1 ( ( OR<LogicalBinaryOperatorNode> | AND<LogicalBinaryOperatorNode> ) condition1 )* ;
 
 condition1:
-	( NOT<NotOperatorNode>^ )? ( simple_condition | parenthesis ) ;
+	( NOT<NotOperatorNode> )? ( simple_condition | parenthesis ) ;
 
 parenthesis:
-    parenthesis_ -> ^(PARENTHESIS<ParenthesisNode> parenthesis_) ;
-
-parenthesis_:
-	LPAREN! condition RPAREN! ;
+	LPAREN condition RPAREN ;
 
 simple_condition:
 	field_based_condition | set_based_condition | like_based_condition ;
 
 field_based_condition:
-    field_based_condition_ -> ^(FIELD_BASED_CONDITION<FieldBasedConditionNode> field_based_condition_) ;
-
-field_based_condition_:
 	condition_field comparison_operator literal ;
 
 set_based_condition:
-    set_based_condition_ -> ^(SET_BASED_CONDITION<SetBasedConditionNode> set_based_condition_) ;
-
-set_based_condition_:
 	condition_field set_operator ( soql_subquery | set_values ) ;
 
 like_based_condition:
-    like_based_condition_ -> ^(LIKE_BASED_CONDITION<LikeBasedConditionNode> like_based_condition_) ;
-
-like_based_condition_:
-	condition_field LIKE! ( STRING_VALUE | LIKE_STRING_VALUE );
+	condition_field LIKE ( STRING_VALUE | LIKE_STRING_VALUE );
 
 condition_field:
 	field | function_call ;
 
 set_values:
-	LPAREN! set_value_list RPAREN! ;
+	LPAREN set_value_list RPAREN ;
 
 set_value_list:
-    set_value_list_ -> ^(SET_VALUES<SetValuesNode> set_value_list_) ;
-
-set_value_list_:
-	literal ( COMMA! literal )* ;
+	literal ( COMMA literal )* ;
 
 /************************************** WITH CLAUSE *************************************/
 
 with_clause:
-	WITH<WithClauseNode>^ ( with_plain_clause | with_data_category_clause ) ;
+	WITH<WithClauseNode> ( with_plain_clause | with_data_category_clause ) ;
 
 with_plain_clause:
-    with_plain_clause_ -> ^(WITH_PLAIN_CLAUSE with_plain_clause_) ;
-
-with_plain_clause_:
 	field_based_condition ;
 	
 with_data_category_clause:
-	DATA^ CATEGORY! data_category_spec_list ;
+	DATA CATEGORY data_category_spec_list ;
 	
 data_category_spec_list:
-	data_category_spec ( AND! data_category_spec )* ;
+	data_category_spec ( AND data_category_spec )* ;
 
 data_category_spec:
-    data_category_spec_ -> ^(DATA_CATEGORY_SPEC<DataCategorySpecNode> data_category_spec_) ;
-
-data_category_spec_:
 	data_category_group_name data_category_selector data_category_parameter_list ;
 
 data_category_parameter_list:
-    data_category_parameter_list_ -> ^(DATA_CATEGORY_PARAMETERS data_category_parameter_list_) ;
-
-data_category_parameter_list_:
-    data_category_name | LPAREN! data_category_name ( COMMA! data_category_name )* RPAREN! ;
+    data_category_name | LPAREN data_category_name ( COMMA data_category_name )* RPAREN ;
 
 data_category_selector:
 	AT | ABOVE | ABOVE_OR_BELOW | BELOW ;
@@ -701,19 +562,16 @@ data_category_selector:
 /************************************ GROUP BY CLAUSE ***********************************/
 
 group_by_plain_clause:
-    group_by_plain_clause_ -> ^(GROUP_BY_PLAIN_CLAUSE group_by_plain_clause_) ;
-
-group_by_plain_clause_:
 	group_by_list ;
 
 group_by_rollup_clause:
-	ROLLUP^ LPAREN! group_by_list RPAREN! ;
+	ROLLUP LPAREN group_by_list RPAREN ;
 
 group_by_cube_clause:
-	CUBE^ LPAREN! group_by_list RPAREN! ;
+	CUBE LPAREN group_by_list RPAREN ;
 
 group_by_list:
-	group_by_spec ( COMMA! group_by_spec )* ;
+	group_by_spec ( COMMA group_by_spec )* ;
 
 group_by_spec:
 	field | function_call ;
@@ -721,19 +579,16 @@ group_by_spec:
 /************************************ ORDER BY CLAUSE ***********************************/
 
 order_by_list:
-	order_by_spec ( COMMA! order_by_spec )* ;
+	order_by_spec ( COMMA order_by_spec )* ;
 
 order_by_spec:
-    order_by_spec_ -> ^(ORDER_BY_SPEC<OrderBySpecNode> order_by_spec_) ;
-
-order_by_spec_:
 	order_by_field ( order_by_direction_clause )? ( order_by_nulls_clause )? ;
 
 order_by_direction_clause:
     ASC | DESC ;
 
 order_by_nulls_clause:
-    NULLS^ ( FIRST | LAST ) ;
+    NULLS ( FIRST | LAST ) ;
 
 order_by_field:
 	field | function_call ;
