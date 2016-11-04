@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mulesoft.sfdl</groupId>
+	<groupId>org.mule.tools</groupId>
 	<artifactId>salesforce-soql-parser</artifactId>
 	<version>1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -73,20 +73,43 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<header>LICENSE_HEADER.txt</header>
+					<includes>
+						<include>**/*.java</include>
+						<include>**/*.g</include>
+					</includes>
+					<mapping>
+						<java>SLASHSTAR_STYLE</java>
+						<g>SLASHSTAR_STYLE</g>
+					</mapping>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
 	<distributionManagement>
 		<repository>
-			<id>mule-ee-releases</id>
-			<name>MuleEE Releases Repository</name>
-			<url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases/</url>
+			<id>mulesoft-releases</id>
+			<name>MuleSoft Releases Repository</name>
+			<url>https://repository-master.mulesoft.org/releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>mule-ee-snapshots</id>
-			<name>MuleEE Snapshots Repository</name>
-			<url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots/</url>
-			<uniqueVersion>false</uniqueVersion>
+			<id>mulesoft-snapshots</id>
+			<name>MuleSoft Snapshots Repository</name>
+			<url>https://repository-master.mulesoft.org/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
